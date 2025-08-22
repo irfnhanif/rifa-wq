@@ -18,10 +18,11 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('whatsapp_number');
             $table->string('order_title');
-            $table->text('order_description');
+            $table->text('order_description')->nullable();
             $table->string('printing_size');
             $table->string('printing_material');
             $table->date('order_deadline');
+            $table->integer('order_cost')->nullable();
             $table->enum('order_status', ['PENDING', 'PROCESSED', 'FINISHED', 'PICKED_UP'])->default('PENDING');
             $table->timestamps();
         });
