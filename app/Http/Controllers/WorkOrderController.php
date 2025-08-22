@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class WorkOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
@@ -23,7 +22,7 @@ class WorkOrderController extends Controller
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
-        $query = WorkOrder::query()->with('user');
+        $query = WorkOrder::query()->with('user:id,name');
 
         if ($search !== '') {
             $term = addcslashes($search, '\%_');
@@ -36,7 +35,7 @@ class WorkOrderController extends Controller
             });
         };
 
-        if ($status !== 'ALL') {
+        if ($validatedStatus !== 'ALL') {
             $query->where('order_status', $validatedStatus);
         }
 
@@ -44,53 +43,66 @@ class WorkOrderController extends Controller
             ->orderBy($validatedColumn, $validatedDirection)
             ->paginate(10)
             ->withQueryString();
+
+        return Inertia::render('work-order/index', ['workOrders' => $workOrders]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'customer_name' => 'required|string|min:2|max:255',
+            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
+            'order_title' => 'required|string|min:2|max:255',
+            'order_description' => 'string|min:2',
+            'printing_size' => 'required|max:10',
+            'printing_material' => 'required|string|min:2|max:255',
+            'order_deadline' => 'required|date|after:today',
+        ]);
+
+        $validated['user_id'] = $request->user()->id;
+
+        $workOrder = WorkOrder::create($validated);
+
+        // cspell:disable-next-line
+        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil ditambahkan", $workOrder['order_title']));
     }
 
-    /**
-     * Display the specified resource.
-     */
+
+    // This method is always called by AJAX request (API)
     public function show(string $id)
     {
-        //
+        $workOrder = WorkOrder::findOrFail($id);
+
+        return response()->json($workOrder);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $workOrder = WorkOrder::findOrFail($id);
+
+        $validated = $request->validate([
+            'customer_name' => 'required|string|min:2|max:255',
+            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
+            'order_title' => 'required|string|min:2|max:255',
+            'order_description' => 'string|min:2',
+            'printing_size' => 'required|max:10',
+            'printing_material' => 'required|string|min:2|max:255',
+            'order_deadline' => 'required|date|after:today',
+        ]);
+
+        $workOrder->update($validated);
+
+        // cspell:disable-next-line
+        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil diperbarui", $validated['order_title']));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $workOrder = WorkOrder::findOrFail($id);
+
+        $workOrder->delete();
+
+        // cspell:disable-next-line
+        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil dihapus", $workOrder['order_title']));
     }
 }
