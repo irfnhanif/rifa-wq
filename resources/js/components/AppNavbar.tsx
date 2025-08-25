@@ -1,6 +1,7 @@
 // resources/js/Components/AppNavbar.tsx
 import { Link } from '@inertiajs/react';
 import { Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand } from 'flowbite-react';
+import { Bell, Cog, LogOut } from 'lucide-react';
 import React from 'react';
 import { HiOutlineBell, HiOutlineCog, HiOutlineLogout, HiOutlineSearch } from 'react-icons/hi';
 
@@ -13,29 +14,30 @@ const AppNavbar: React.FC = () => {
             className="border-b border-[#E5E7EB] bg-[#F9FAFB] px-28 py-6"
         >
             <NavbarBrand as={Link} href="/">
-                <svg className="mr-3 h-7 w-7" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.668 7.332H32l-6.668 9.332L22.668 7.332z" fill="#0EA5E9"></path>
-                    <path d="M12.001 2H2v12l10.001-4V2z" fill="#0EA5E9"></path>
-                    <path d="M12.001 10l10.667-2.668L16 16l-3.999-6z" fill="#2563EB"></path>
-                    <path d="M22.668 16.668l-4.001-5.336-6.667 9.336h17.336l-6.668-4z" fill="#2563EB"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" className="mr-3 h-7 w-7">
+                    <path
+                        fill="#039be5"
+                        d="M28.967 12H9.442a2 2 0 0 0-1.898 1.368L4 24V10h24a2 2 0 0 0-2-2H15.124a2 2 0 0 1-1.28-.464l-1.288-1.072A2 2 0 0 0 11.276 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h22l4.805-11.212A2 2 0 0 0 28.967 12"
+                    />
+                    <path
+                        fill="#b3e5fc"
+                        d="M24 16v-2h-3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3v-2h-2v-8Zm8-2v-2h-5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5v-2h-4V14Zm-16 2h2v8h-2z"
+                    />
                 </svg>
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#101828]">RIFA-WQ</span>
             </NavbarBrand>
             <div className="flex items-center gap-2 md:order-2">
                 <Button color="gray" pill>
-                    <HiOutlineSearch className="h-5 w-5" />
-                </Button>
-                <Button color="gray" pill>
-                    <HiOutlineBell className="h-5 w-5" />
+                    <Bell className="h-5 w-5" />
                 </Button>
                 <Dropdown arrowIcon={false} inline label={<Avatar alt="User settings" img="https://placehold.co/32x32" rounded />}>
                     <DropdownHeader>
                         <span className="block text-sm">Jese Leos</span>
                         <span className="block truncate text-sm font-medium">name@example.com</span>
                     </DropdownHeader>
-                    <DropdownItem icon={HiOutlineCog}>Settings</DropdownItem>
+                    <DropdownItem icon={Cog}>Pengaturan</DropdownItem>
                     <DropdownDivider />
-                    <DropdownItem icon={HiOutlineLogout}>Keluar</DropdownItem>
+                    <DropdownItem icon={LogOut}>Keluar</DropdownItem>
                 </Dropdown>
             </div>
         </Navbar>
