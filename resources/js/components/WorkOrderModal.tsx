@@ -19,7 +19,7 @@ const WorkOrderModal: React.FC<WorkOrderModalProps> = ({ mode, show, onClose, on
 
     return (
         <Modal show={show} size="3xl" onClose={onClose} popup>
-            <ModalHeader className="border-b border-[#E5E7EB]">{title}</ModalHeader>
+            <ModalHeader className="border-b border-[#E5E7EB] m-3">{title}</ModalHeader>
             <ModalBody>
                 <WorkOrderForm initialData={initialData} onSubmit={onSubmit} onCancel={onClose} />
             </ModalBody>

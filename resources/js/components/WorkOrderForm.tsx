@@ -1,7 +1,7 @@
 // resources/js/components/WorkOrderForm.tsx
 import React, { useEffect, useState } from 'react';
 import { Datepicker, Label, Select, TextInput, Textarea } from 'flowbite-react';
-import { CalendarDays, Hash, Phone, Ruler, User } from 'lucide-react';
+import { CalendarDays, Hash, Phone, Printer, Ruler, User } from 'lucide-react';
 import { WorkOrder } from '@/types/WorkOrder';
 
 const Required = () => <span className="text-[#C70036]">*</span>;
@@ -47,14 +47,22 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
     };
 
     return (
-        <form id="work-order-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form id="work-order-form" onSubmit={handleSubmit} className="flex flex-col gap-4 my-3">
             <div>
                 <div className="mb-2 block">
-                    <Label htmlFor="name">
+                    <Label htmlFor="customerName">
                         Nama Pelanggan <Required />
                     </Label>
                 </div>
-                <TextInput id="name" name="name" value={formData.customerName} onChange={handleChange} placeholder="e.g. Siti" icon={User} required />
+                <TextInput
+                    id="customerName"
+                    name="customerName"
+                    value={formData.customerName}
+                    onChange={handleChange}
+                    placeholder="Isi nama pelanggan disini"
+                    icon={User}
+                    required
+                />
             </div>
 
             <div>
@@ -89,7 +97,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                             Ukuran <Required />
                         </Label>
                     </div>
-                    <TextInput id="printingSize" name="printingSize" placeholder="6 x 4 m" icon={Ruler} required />
+                    <TextInput id="printingSize" name="printingSize" placeholder="Ukuran cetak desain (Contoh: 6x4 m)" icon={Ruler} required />
                 </div>
                 <div>
                     <div className="mb-2 block">
@@ -97,7 +105,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                             Cetak Bahan Apa <Required />
                         </Label>
                     </div>
-                    <Select id="printingMaterial" name="printingMaterial" icon={Hash} required>
+                    <Select id="printingMaterial" name="printingMaterial" icon={Printer} className="w-full" required>
                         <option>HVS</option>
                         <option>Flexi</option>
                         <option>Sticker</option>

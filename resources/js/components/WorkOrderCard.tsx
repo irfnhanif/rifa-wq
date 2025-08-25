@@ -1,12 +1,14 @@
 // resources/js/Components/WorkOrderCard.tsx
-import React from 'react';
+import { Status, WorkOrder } from '@/types/WorkOrder';
 import clsx from 'clsx';
 import { Badge, Button } from 'flowbite-react';
 import { CalendarDays, Check, Clock, Hourglass, LucideIcon, SquarePen, Truck } from 'lucide-react';
-import { WorkOrder, Status } from '@/types/WorkOrder';
+import React from 'react';
 
 interface WorkOrderCardProps {
     order: WorkOrder;
+    onEdit: (order: WorkOrder) => void;
+    // onMarkComplete?: (order: WorkOrder) => void;
 }
 
 const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
@@ -16,7 +18,7 @@ const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
     PICKED_UP: { iconColor: 'text-[#1447E6]', Icon: Truck },
 };
 
-const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order }) => {
+const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
     const { customerName, orderTitle, orderDeadline, orderStatus } = order;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
@@ -39,7 +41,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order }) => {
             </div>
 
             <div className="flex items-center gap-2">
-                <Button className="bg-[#E5E7EB] text-[#101828] hover:bg-gray-200 focus:ring-gray-300">
+                <Button className="bg-[#E5E7EB] text-[#101828] hover:bg-gray-200 focus:ring-gray-300" onClick={() => onEdit(order)}>
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
