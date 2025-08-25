@@ -3,7 +3,6 @@ import { Link } from '@inertiajs/react';
 import { Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarBrand } from 'flowbite-react';
 import { Bell, Cog, LogOut } from 'lucide-react';
 import React from 'react';
-import { HiOutlineBell, HiOutlineCog, HiOutlineLogout, HiOutlineSearch } from 'react-icons/hi';
 
 const AppNavbar: React.FC = () => {
     return (
