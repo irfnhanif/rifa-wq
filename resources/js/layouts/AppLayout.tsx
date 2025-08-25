@@ -1,5 +1,5 @@
 // resources/js/Layouts/AppLayout.tsx
-import AppNavbar from '@/Components/AppNavbar';
+import AppNavbar from '@/components/AppNavbar';
 import React from 'react';
 
 type AppLayoutProps = {
@@ -8,7 +8,7 @@ type AppLayoutProps = {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return (
-        <div className="bg-background-soft min-h-screen">
+        <div className="min-h-screen bg-[#F9FAFB]">
             <AppNavbar />
             <main>{children}</main>
         </div>
