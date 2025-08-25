@@ -1,18 +1,9 @@
 // resources/js/Components/WorkOrderCard.tsx
+import React from 'react';
 import clsx from 'clsx';
 import { Badge, Button } from 'flowbite-react';
 import { CalendarDays, Check, Clock, Hourglass, LucideIcon, SquarePen, Truck } from 'lucide-react';
-import React from 'react';
-
-type Status = 'PENDING' | 'PROCESSED' | 'FINISHED' | 'PICKED_UP';
-
-export interface WorkOrder {
-    id: number;
-    name: string;
-    job: string;
-    deadline: string;
-    status: Status;
-}
+import { WorkOrder, Status } from '@/types/WorkOrder';
 
 interface WorkOrderCardProps {
     order: WorkOrder;
@@ -26,8 +17,8 @@ const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
 };
 
 const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order }) => {
-    const { name, job, deadline, status } = order;
-    const styles = statusStyles[status];
+    const { customerName, orderTitle, orderDeadline, orderStatus } = order;
+    const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
     return (
         <div className={clsx('flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] p-7 shadow-sm')}>
@@ -36,21 +27,20 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order }) => {
             </div>
 
             <div className="flex-1">
-                <h3 className="text-2xl font-semibold text-[#101828]">{name}</h3>
-                <p className="text-base text-[#4A5565]">{job}</p>
+                <h3 className="text-2xl font-semibold text-[#101828]">{customerName}</h3>
+                <p className="text-base text-[#4A5565]">{orderTitle}</p>
             </div>
 
             <div className="flex flex-col items-center gap-3">
                 <span className="text-base text-[#4A5565]">Deadline</span>
                 <Badge color="gray" icon={CalendarDays} size="sm">
-                    {deadline}
+                    {orderDeadline}
                 </Badge>
             </div>
 
             <div className="flex items-center gap-2">
-                {/* Replaced Button 'color' prop with 'className' for precise styling */}
-                <Button size="xs" className="bg-[#E5E7EB] text-[#101828] hover:bg-gray-200 focus:ring-gray-300">
-                    <SquarePen className="mr-2 h-3 w-3" />
+                <Button className="bg-[#E5E7EB] text-[#101828] hover:bg-gray-200 focus:ring-gray-300">
+                    <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
                 <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">

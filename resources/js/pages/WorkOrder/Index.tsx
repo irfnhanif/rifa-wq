@@ -1,13 +1,14 @@
 // resources/js/Pages/WorkQueue/Index.tsx
+import React from 'react';
 import { Head, router } from '@inertiajs/react';
 import { Button, Dropdown, DropdownItem, Pagination } from 'flowbite-react';
-import React from 'react';
+import { ArrowDownUp, Plus } from 'lucide-react';
+import { WorkOrder, Status } from '@/types/WorkOrder';
 
 // Import Components and Types
 import StatCard from '@/components/StatCard';
-import WorkOrderCard, { WorkOrder } from '@/components/WorkOrderCard';
+import WorkOrderCard from '@/components/WorkOrderCard';
 import AppLayout from '@/layouts/AppLayout';
-import { ArrowDownUp, Plus } from 'lucide-react';
 
 // Define types for data passed from the backend
 interface Stats {
@@ -27,24 +28,8 @@ interface WorkOrderIndexProps {
     workOrders: PaginatedWorkOrders;
 }
 
-// Mock data to simulate what Inertia would pass from the backend
-const mockStats: Stats = {
-    queueCount: 36,
-    dailyRevenue: 'Rp 2.500.000',
-};
 
-const mockWorkOrders: PaginatedWorkOrders = {
-    current_page: 3,
-    last_page: 10,
-    data: [
-        { id: 1, name: 'Andi Sumandi', job: 'Desain Banner Wisuda', deadline: '19 Agu 2025', status: 'PENDING' },
-        { id: 2, name: 'Anto Sumanto', job: 'Fotokopi KTP', deadline: '19 Agu 2025', status: 'PROCESSED' },
-        { id: 3, name: 'Andi Sumandi', job: 'Print Stiker', deadline: '19 Agu 2025', status: 'FINISHED' },
-        { id: 4, name: 'Bang Naren', job: 'Print Keychain', deadline: '22 Agu 2025', status: 'PICKED_UP' },
-    ],
-};
-
-const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats = mockStats, workOrders = mockWorkOrders }) => {
+const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats , workOrders }) => {
     const onPageChange = (page: number) => {
         // Use Inertia's router to visit the new page, preserving query strings
         router.get(window.location.pathname, { page }, { preserveState: true });
