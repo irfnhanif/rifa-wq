@@ -14,7 +14,7 @@ const AppNavbar: React.FC = () => {
             className="border-b border-[#E5E7EB] bg-[#F9FAFB] px-28 py-6"
         >
             <NavbarBrand as={Link} href="/">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" className="mr-3 h-7 w-7">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" className=" ml-3 mr-3 h-7 w-7">
                     <path
                         fill="#039be5"
                         d="M28.967 12H9.442a2 2 0 0 0-1.898 1.368L4 24V10h24a2 2 0 0 0-2-2H15.124a2 2 0 0 1-1.28-.464l-1.288-1.072A2 2 0 0 0 11.276 6H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h22l4.805-11.212A2 2 0 0 0 28.967 12"
@@ -27,7 +27,7 @@ const AppNavbar: React.FC = () => {
                 <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#101828]">RIFA-WQ</span>
             </NavbarBrand>
             <div className="flex items-center gap-2 md:order-2">
-                <Button color="gray" pill>
+                <Button outline>
                     <Bell className="h-5 w-5" />
                 </Button>
                 <Dropdown arrowIcon={false} inline label={<Avatar alt="User settings" img="https://placehold.co/32x32" rounded />}>
