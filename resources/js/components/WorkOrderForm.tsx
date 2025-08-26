@@ -176,7 +176,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                 </div>
             </div>
 
-            {initialData?.orderStatus && (<AdditionalEditFields orderStatus={initialData.orderStatus} orderCost={initialData.orderCost} handleChange={handleChange} />)}
+            {initialData?.orderStatus && (
+                <AdditionalEditFields orderStatus={initialData.orderStatus} orderCost={initialData.orderCost} handleChange={handleChange} />
+            )}
 
             <div>
                 <div className="mb-2 block">
@@ -184,7 +186,16 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                         Deadline <Required />
                     </Label>
                 </div>
-                <Datepicker id="orderDeadline" name="orderDeadline" onChange={handleDateChange} icon={CalendarDays} required />
+                <Datepicker
+                    id="orderDeadline"
+                    name="orderDeadline"
+                    onChange={handleDateChange}
+                    icon={CalendarDays}
+                    language="id-ID"
+                    labelTodayButton='Hari Ini'
+                    labelClearButton='Bersihkan'
+                    required
+                />
             </div>
 
             <div>
@@ -194,7 +205,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                 </div>
                 <Textarea id="orderDescription" name="orderDescription" placeholder="Tulis deskripsi tambahan disini..." rows={4} />
             </div>
-            {!initialData?.orderStatus && (<p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>)}
+            {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
         </form>
     );
 };
