@@ -12,6 +12,45 @@ interface WorkOrderFormProps {
     onCancel: () => void;
 }
 
+interface AdditionalEditFieldsProps {
+    orderStatus: string;
+    orderCost: Partial<number> | null | undefined;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+}
+
+const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus, orderCost, handleChange }) => {
+    if (!orderStatus) {
+        return;
+    }
+
+    return (
+        <>
+            <div>
+                <div className="mb-2 block">
+                    <Label htmlFor="orderStatus">
+                        Status <Required />
+                    </Label>
+                </div>
+                <Select id="orderStatus" name="orderStatus" value={orderStatus} onChange={handleChange} icon={Printer} className="w-full" required>
+                    <option value="PENDING">Tertunda</option>
+                    <option value="IN_PROCESS">Dalam Proses</option>
+                    <option value="FINISHED">Selesai</option>
+                    <option value="PICKED_UP">Telah Diambil</option>
+                </Select>
+            </div>
+
+            <div>
+                <div className="mb-2 block">
+                    <Label htmlFor="orderCost">
+                        Biaya Pekerjaan <Required />
+                    </Label>
+                </div>
+                <TextInput id="orderCost" name="orderCost" value={orderCost?.toString()} onChange={handleChange} placeholder="" required />
+            </div>
+        </>
+    );
+};
+
 const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, onCancel }) => {
     const [formData, setFormData] = useState<Partial<WorkOrder>>({
         customerName: '',
@@ -19,8 +58,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
         orderTitle: '',
         printingSize: '',
         printingMaterial: '',
+        orderCost: null,
         orderDeadline: new Date(),
-        orderDescription: '',
+        orderDescription: null,
     });
 
     useEffect(() => {
@@ -38,7 +78,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
         if (!date) {
             return;
         }
-        setFormData((prev) => ({ ...prev, deadline: date.toISOString() }));
+        setFormData((prev) => ({ ...prev, deadline: date }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -85,7 +125,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="orderTitle">
-                        Judul Orderan <Required />
+                        Judul Kerja <Required />
                     </Label>
                 </div>
                 <TextInput
@@ -118,24 +158,25 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                 <div>
                     <div className="mb-2 block">
                         <Label htmlFor="printingMaterial">
-                            Cetak Bahan Apa <Required />
+                            Bahan Cetak <Required />
                         </Label>
                     </div>
                     <Select
                         id="printingMaterial"
                         name="printingMaterial"
-                        value={formData.printingMaterial}
+                        value={formData.printingMaterial || ''}
                         onChange={handleChange}
-                        icon={Printer}
                         className="w-full"
                         required
                     >
-                        <option>HVS</option>
-                        <option>Flexi</option>
-                        <option>Sticker</option>
+                        <option value="HVS">HVS</option>
+                        <option value="Flexi">Flexi</option>
+                        <option value="Sticker">Sticker</option>
                     </Select>
                 </div>
             </div>
+
+            {initialData?.orderStatus && (<AdditionalEditFields orderStatus={initialData.orderStatus} orderCost={initialData.orderCost} handleChange={handleChange} />)}
 
             <div>
                 <div className="mb-2 block">
@@ -143,14 +184,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                         Deadline <Required />
                     </Label>
                 </div>
-                <Datepicker
-                    id="orderDeadline"
-                    name="orderDeadline"
-                    value={formData.orderDeadline}
-                    onChange={handleDateChange}
-                    icon={CalendarDays}
-                    required
-                />
+                <Datepicker id="orderDeadline" name="orderDeadline" onChange={handleDateChange} icon={CalendarDays} required />
             </div>
 
             <div>
@@ -160,7 +194,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                 </div>
                 <Textarea id="orderDescription" name="orderDescription" placeholder="Tulis deskripsi tambahan disini..." rows={4} />
             </div>
-            <p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>
+            {!initialData?.orderStatus && (<p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>)}
         </form>
     );
 };
