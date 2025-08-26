@@ -1,8 +1,8 @@
 // resources/js/components/WorkOrderForm.tsx
-import React, { useEffect, useState } from 'react';
-import { Datepicker, Label, Select, TextInput, Textarea } from 'flowbite-react';
-import { CalendarDays, Hash, Phone, Printer, Ruler, User } from 'lucide-react';
 import { WorkOrder } from '@/types/WorkOrder';
+import { Datepicker, Label, Select, TextInput, Textarea } from 'flowbite-react';
+import { CalendarDays, Phone, Printer, Ruler, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 const Required = () => <span className="text-[#C70036]">*</span>;
 
@@ -19,7 +19,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
         orderTitle: '',
         printingSize: '',
         printingMaterial: '',
-        orderDeadline: new Date().toISOString(),
+        orderDeadline: new Date(),
         orderDescription: '',
     });
 
@@ -47,7 +47,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
     };
 
     return (
-        <form id="work-order-form" onSubmit={handleSubmit} className="flex flex-col gap-4 my-3">
+        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4">
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="customerName">
@@ -71,7 +71,15 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                         No. Whatsapp <Required />
                     </Label>
                 </div>
-                <TextInput id="whatsappNumber" name="whatsappNumber" placeholder="Isi nomor WA pelanggan disini" icon={Phone} required />
+                <TextInput
+                    id="whatsappNumber"
+                    name="whatsappNumber"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    placeholder="Isi nomor WA pelanggan disini"
+                    icon={Phone}
+                    required
+                />
             </div>
 
             <div>
@@ -97,7 +105,15 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                             Ukuran <Required />
                         </Label>
                     </div>
-                    <TextInput id="printingSize" name="printingSize" placeholder="Ukuran cetak desain (Contoh: 6x4 m)" icon={Ruler} required />
+                    <TextInput
+                        id="printingSize"
+                        name="printingSize"
+                        value={formData.printingSize}
+                        onChange={handleChange}
+                        placeholder="Ukuran cetak desain (Contoh: 6x4 m)"
+                        icon={Ruler}
+                        required
+                    />
                 </div>
                 <div>
                     <div className="mb-2 block">
@@ -105,7 +121,15 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                             Cetak Bahan Apa <Required />
                         </Label>
                     </div>
-                    <Select id="printingMaterial" name="printingMaterial" icon={Printer} className="w-full" required>
+                    <Select
+                        id="printingMaterial"
+                        name="printingMaterial"
+                        value={formData.printingMaterial}
+                        onChange={handleChange}
+                        icon={Printer}
+                        className="w-full"
+                        required
+                    >
                         <option>HVS</option>
                         <option>Flexi</option>
                         <option>Sticker</option>
@@ -119,7 +143,14 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                         Deadline <Required />
                     </Label>
                 </div>
-                <Datepicker id="orderDeadline" name="orderDeadline" onChange={handleDateChange} icon={CalendarDays} required />
+                <Datepicker
+                    id="orderDeadline"
+                    name="orderDeadline"
+                    value={formData.orderDeadline}
+                    onChange={handleDateChange}
+                    icon={CalendarDays}
+                    required
+                />
             </div>
 
             <div>
