@@ -13,7 +13,7 @@ interface WorkOrderCardProps {
 
 const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
     PENDING: { iconColor: 'text-[#B91C1C]', Icon: Clock },
-    PROCESSED: { iconColor: 'text-[#D97706]', Icon: Hourglass },
+    IN_PROCESS: { iconColor: 'text-[#D97706]', Icon: Hourglass },
     FINISHED: { iconColor: 'text-[#047857]', Icon: Check },
     PICKED_UP: { iconColor: 'text-[#1447E6]', Icon: Truck },
 };
@@ -21,6 +21,8 @@ const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
 const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
     const { customerName, orderTitle, orderDeadline, orderStatus } = order;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
+
+    const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', {day: 'numeric', month: '2-digit', year: 'numeric'})
 
     return (
         <div className={clsx('flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] p-7 shadow-sm')}>
@@ -36,7 +38,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
             <div className="flex flex-col items-center gap-3">
                 <span className="text-base text-[#4A5565]">Deadline</span>
                 <Badge color="gray" icon={CalendarDays} size="sm">
-                    {orderDeadline}
+                    {formattedOrderDeadline}
                 </Badge>
             </div>
 
