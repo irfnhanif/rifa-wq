@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('printing_material');
             $table->date('order_deadline');
             $table->integer('order_cost')->nullable();
-            $table->enum('order_status', ['PENDING', 'PROCESSED', 'FINISHED', 'PICKED_UP'])->default('PENDING');
+            $table->enum('order_status', ['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP'])->default('PENDING');
             $table->timestamps();
         });
     }
