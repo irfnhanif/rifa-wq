@@ -19,10 +19,47 @@ const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
 };
 
 const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
-    const { customerName, orderTitle, orderDeadline, orderStatus } = order;
+    const { id, customerName, orderTitle, orderDeadline, orderStatus } = order;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
+    const handleMarkComplete = (id: string, status: Status) => {
+
+    }
+
     const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', {day: 'numeric', month: '2-digit', year: 'numeric'})
+
+    const renderActionButton = () => {
+        if (orderStatus === 'PENDING') {
+            return (
+                <Button
+                    className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300"
+                >
+                    <Hourglass className="mr-2 h-4 w-4" />
+                    Mulai Proses
+                </Button>
+            );
+        } else if (orderStatus === 'IN_PROCESS') {
+            return (
+                <Button
+                    className="bg-[#047857] text-[#FFFFFF] hover:bg-green-800 focus:ring-4 focus:ring-green-300"
+                >
+                    <Check className="mr-2 h-4 w-4" />
+                    {/* cspell:disable-next-line */}
+                    Tandai Selesai
+                </Button>
+            );
+        } else if (orderStatus === 'FINISHED') {
+            return (
+                <Button
+                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                >
+                    <Truck className="mr-2 h-4 w-4" />
+                    Tandai Diambil
+                </Button>
+            );
+        }
+        return null;
+    };
 
     return (
         <div className={clsx('flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] p-7 shadow-sm')}>
@@ -47,10 +84,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
-                    <Check className="mr-2 h-4 w-4" />
-                    Tandai Selesai
-                </Button>
+                {renderActionButton()}
             </div>
         </div>
     );
