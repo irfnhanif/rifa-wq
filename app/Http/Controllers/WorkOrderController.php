@@ -14,15 +14,15 @@ class WorkOrderController extends Controller
         $search = trim((string) $request->query('search', ''));
         $status = strtoupper(preg_replace('/\s+/', '_', $request->query('status', 'all')));
         $column = $request->query('column', 'created_at');
-        $direction = $request->query('direction', 'asc');
+        $direction = $request->query('direction', 'desc'); // Changed default to desc
 
         $allowedStatus = ['PENDING', 'PROCESSED', 'FINISHED', 'PICKED_UP', 'ALL'];
         $validatedStatus = in_array($status, $allowedStatus, true) ? $status : 'ALL';
-        $allowedColumns = ['order_title', 'customer_name', 'created_at'];
+        $allowedColumns = ['order_title', 'customer_name', 'created_at', 'order_deadline']; // Added order_deadline
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
-        $query = WorkOrder::query()->with('user:id,name');
+        $query = WorkOrder::query()->with('user:id,username');
 
         if ($search !== '') {
             $term = addcslashes($search, '\%_');
@@ -33,7 +33,7 @@ class WorkOrderController extends Controller
                     ->orWhere('customer_name', 'ilike', $like)
                     ->orWhere('whatsapp_number', 'ilike', $like);
             });
-        };
+        }
 
         if ($validatedStatus !== 'ALL') {
             $query->where('order_status', $validatedStatus);
@@ -44,7 +44,23 @@ class WorkOrderController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('work-order/index', ['workOrders' => $workOrders]);
+        $queueCount = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->count();
+        $dailyRevenue = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->sum('order_cost');
+        $formattedDailyRevenue = 'Rp' . number_format($dailyRevenue, 0, ',', '.');
+
+        return Inertia::render('WorkOrder/Index', [
+            'stats' => [
+                'queueCount' => $queueCount,
+                'dailyRevenue' => $formattedDailyRevenue
+            ],
+            'workOrders' => $workOrders,
+            'filters' => [
+                'search' => $search,
+                'status' => $validatedStatus,
+                'column' => $validatedColumn,
+                'direction' => $validatedDirection,
+            ]
+        ]);
     }
 
     public function store(Request $request)
