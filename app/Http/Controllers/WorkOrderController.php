@@ -14,11 +14,11 @@ class WorkOrderController extends Controller
         $search = trim((string) $request->query('search', ''));
         $status = strtoupper(preg_replace('/\s+/', '_', $request->query('status', 'all')));
         $column = $request->query('column', 'created_at');
-        $direction = $request->query('direction', 'desc'); // Changed default to desc
+        $direction = $request->query('direction', 'desc');
 
         $allowedStatus = ['PENDING', 'PROCESSED', 'FINISHED', 'PICKED_UP', 'ALL'];
         $validatedStatus = in_array($status, $allowedStatus, true) ? $status : 'ALL';
-        $allowedColumns = ['order_title', 'customer_name', 'created_at', 'order_deadline']; // Added order_deadline
+        $allowedColumns = ['order_title', 'customer_name', 'created_at', 'order_deadline', 'order_status'];
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 

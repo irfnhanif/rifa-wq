@@ -1,13 +1,13 @@
 import { WorkOrder } from '@/types/WorkOrder';
-import { Head, router, usePage } from '@inertiajs/react';
-import { Button, Dropdown, DropdownItem, Pagination, TextInput } from 'flowbite-react';
+import { Head, router } from '@inertiajs/react';
+import { Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
 import WorkOrderModal from '@/components/WorkOrderModal';
 import AppLayout from '@/layouts/AppLayout';
-import { ArrowDownUp, Plus, Search } from 'lucide-react';
+import {  ArrowDownUp, ArrowDownZA, ArrowUpAZ, Plus, Search } from 'lucide-react';
 import { debounce } from 'lodash';
 
 interface Stats {
@@ -40,6 +40,14 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [sortColumn, setSortColumn] = useState(filters.column || 'created_at');
     const [sortDirection, setSortDirection] = useState(filters.direction || 'desc');
 
+    const sortOptions = [
+        { value: 'created_at', label: 'Tanggal Dibuat' },
+        { value: 'order_deadline', label: 'Deadline' },
+        { value: 'customer_name', label: 'Nama Pelanggan' },
+        { value: 'order_title', label: 'Judul Pekerjaan' },
+        { value: 'order_status', label: 'Status' },
+    ];
+
     const handleOpenAddModal = () => {
         setModalMode('add');
         setEditingOrder(null);
@@ -70,14 +78,26 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 {
                     preserveState: true,
                     preserveScroll: true,
-                    replace: true, // Replaces current history entry
+                    replace: true,
                 },
             );
-        }, 300), // 300ms delay
+        }, 300),
         [sortColumn, sortDirection, filters.status],
     );
 
-    const handleSort = (column: string) => {
+    const getCurrentSortLabel = () => {
+        const option = sortOptions.find((opt) => opt.value === sortColumn);
+
+        return option ? option.label : 'Tanggal Dibuat';
+    };
+
+    const getSortIcon = () => {
+        if (sortDirection === 'asc') return <ArrowUpAZ className="h-4 w-4 mr-2" />;
+        if (sortDirection === 'desc') return <ArrowDownZA className="h-4 w-4 mr-2" />;
+        return <ArrowDownUp className="h-4 w-4 mr-2" />;
+    };
+
+    const handleSortChange = (column: string) => {
         const newDirection = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc';
         setSortColumn(column);
         setSortDirection(newDirection);
@@ -98,10 +118,14 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         );
     };
 
+    const toggleSortDirection = () => {
+        handleSortChange(sortColumn);
+    };
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearch(value); // Immediate UI update
-        debouncedSearch(value); // Debounced API call
+        setSearch(value);
+        debouncedSearch(value);
     };
 
     const handlePageChange = (page: number) => {
@@ -150,7 +174,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     <div className="flex items-center justify-between px-7 py-4">
                         <h1 className="text-xl font-bold text-[#101828]">Antrian Pekerjaan</h1>
                         <div className="flex items-center gap-4">
-                            {/* Search Input */}
                             <TextInput
                                 id="search"
                                 type="text"
@@ -162,15 +185,53 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 sizing="md"
                             />
 
-                            {/* Sort Button */}
-                            <Button
-                                onClick={() => handleSort('order_deadline')}
-                                className="border border-[#E5E7EB] bg-[#FFFFFF] text-[#4A5565] hover:bg-gray-100 focus:ring-gray-200"
+                            <Dropdown
+                                renderTrigger={() => (
+                                    <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+                                        {getSortIcon()}
+                                        {/* cspell:disable-next-line */}
+                                        {getCurrentSortLabel()}
+                                    </Button>
+                                )}
+                                label={
+                                    <div className="flex items-center gap-2">
+                                        {getSortIcon()}
+                                        {/* cspell:disable-next-line */}
+                                        {getCurrentSortLabel()}
+                                        <span className="text-xs text-gray-500">({sortDirection === 'asc' ? 'A-Z' : 'Z-A'})</span>
+                                    </div>
+                                }
+                                color="gray"
+                                size="sm"
                             >
-                                <ArrowDownUp className="mr-2 h-4 w-4" />
-                                Berdasarkan Deadline
-                                {sortColumn === 'order_deadline' && <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
-                            </Button>
+                                <DropdownHeader>
+                                    {/* cspell:disable-next-line */}
+                                    <span className="block text-sm font-semibold">Pilih Kolom:</span>
+                                </DropdownHeader>
+
+                                {sortOptions.map((option) => (
+                                    <DropdownItem
+                                        key={option.value}
+                                        onClick={() => handleSortChange(option.value)}
+                                        className={sortColumn === option.value ? 'bg-blue-50 text-blue-600' : ''}
+                                    >
+                                        <div className="flex w-full items-center justify-between">
+                                            <span className={sortColumn === option.value ? 'font-medium' : ''}>{option.label}</span>
+                                            {sortColumn === option.value && getSortIcon()}
+                                        </div>
+                                    </DropdownItem>
+                                ))}
+
+                                <DropdownDivider />
+
+                                <DropdownItem onClick={toggleSortDirection}>
+                                    <div className="flex items-center gap-2">
+                                        {getSortIcon()}
+                                        {/* cspell:disable-next-line */}
+                                        <span>Toggle Arah: {sortDirection === 'asc' ? 'A-Z → Z-A' : 'Z-A → A-Z'}</span>
+                                    </div>
+                                </DropdownItem>
+                            </Dropdown>
 
                             <Button
                                 onClick={handleOpenAddModal}
