@@ -1,14 +1,14 @@
 import { WorkOrder } from '@/types/WorkOrder';
 import { Head, router } from '@inertiajs/react';
-import { Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput } from 'flowbite-react';
+import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
 import WorkOrderModal from '@/components/WorkOrderModal';
 import AppLayout from '@/layouts/AppLayout';
-import {  ArrowDownUp, ArrowDownZA, ArrowUpAZ, Plus, Search } from 'lucide-react';
 import { debounce } from 'lodash';
+import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, ListFilter, Plus, Search } from 'lucide-react';
 
 interface Stats {
     queueCount: number;
@@ -39,6 +39,10 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [search, setSearch] = useState(filters.search || '');
     const [sortColumn, setSortColumn] = useState(filters.column || 'created_at');
     const [sortDirection, setSortDirection] = useState(filters.direction || 'desc');
+    const [filterStatus, setFilterStatus] = useState<string[]>(() => {
+        if (!filters.status || filters.status === 'all') return [];
+        return Array.isArray(filters.status) ? filters.status : [filters.status];
+    });
 
     const sortOptions = [
         { value: 'created_at', label: 'Tanggal Dibuat' },
@@ -46,6 +50,13 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         { value: 'customer_name', label: 'Nama Pelanggan' },
         { value: 'order_title', label: 'Judul Pekerjaan' },
         { value: 'order_status', label: 'Status' },
+    ];
+
+    const filterOptions = [
+        { value: 'PENDING', label: 'Ditunda' },
+        { value: 'IN_PROCESS', label: 'Dalam Proses' },
+        { value: 'FINISHED', label: 'Selesai' },
+        { value: 'PICKED_UP', label: 'Sudah Diambil' },
     ];
 
     const handleOpenAddModal = () => {
@@ -65,26 +76,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         setEditingOrder(null);
     };
 
-    const debouncedSearch = useCallback(
-        debounce((searchTerm: string) => {
-            router.get(
-                window.location.pathname,
-                {
-                    search: searchTerm,
-                    column: sortColumn,
-                    direction: sortDirection,
-                    status: filters.status || 'ALL',
-                },
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                    replace: true,
-                },
-            );
-        }, 300),
-        [sortColumn, sortDirection, filters.status],
-    );
-
     const getCurrentSortLabel = () => {
         const option = sortOptions.find((opt) => opt.value === sortColumn);
 
@@ -92,9 +83,13 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     };
 
     const getSortIcon = () => {
-        if (sortDirection === 'asc') return <ArrowUpAZ className="h-4 w-4 mr-2" />;
-        if (sortDirection === 'desc') return <ArrowDownZA className="h-4 w-4 mr-2" />;
-        return <ArrowDownUp className="h-4 w-4 mr-2" />;
+        if (sortDirection === 'asc') return <ArrowUpAZ className="mr-2 h-4 w-4" />;
+        if (sortDirection === 'desc') return <ArrowDownZA className="mr-2 h-4 w-4" />;
+        return <ArrowDownUp className="mr-2 h-4 w-4" />;
+    };
+
+    const toggleSortDirection = () => {
+        handleSortChange(sortColumn);
     };
 
     const handleSortChange = (column: string) => {
@@ -108,7 +103,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 search: search,
                 column: column,
                 direction: newDirection,
-                status: filters.status || 'ALL',
+                status: filterStatus.length === 0 ? '' : filterStatus,
             },
             {
                 preserveState: true,
@@ -118,9 +113,52 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         );
     };
 
-    const toggleSortDirection = () => {
-        handleSortChange(sortColumn);
+    const handleFilterChange = (status: string) => {
+        let newFilterStatus: string[];
+
+        if (filterStatus.includes(status)) {
+            newFilterStatus = filterStatus.filter((s) => s !== status);
+        } else {
+            newFilterStatus = [...filterStatus, status];
+        }
+
+        setFilterStatus(newFilterStatus);
+
+        router.get(
+            window.location.pathname,
+            {
+                search: search,
+                column: sortColumn,
+                direction: sortDirection,
+                status: newFilterStatus.length === 0 ? '' : newFilterStatus,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            },
+        );
     };
+
+    const debouncedSearch = useCallback(
+        debounce((searchTerm: string) => {
+            router.get(
+                window.location.pathname,
+                {
+                    search: searchTerm,
+                    column: sortColumn,
+                    direction: sortDirection,
+                    status: filterStatus.length === 0 ? '' : filterStatus,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    replace: true,
+                },
+            );
+        }, 300),
+        [sortColumn, sortDirection, filterStatus],
+    );
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -135,7 +173,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 search: search,
                 column: sortColumn,
                 direction: sortDirection,
-                status: filters.status || 'ALL',
+                status: filterStatus.length === 0 ? '' : filterStatus,
                 page: page,
             },
             {
@@ -160,6 +198,12 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         setSearch(filters.search || '');
         setSortColumn(filters.column || 'created_at');
         setSortDirection(filters.direction || 'desc');
+        const statusFilter = filters.status;
+        if (!statusFilter) {
+            setFilterStatus([]);
+        } else {
+            setFilterStatus(Array.isArray(statusFilter) ? statusFilter : [statusFilter]);
+        }
     }, [filters]);
 
     return (
@@ -188,6 +232,46 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             <Dropdown
                                 renderTrigger={() => (
                                     <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+                                        <ListFilter className="mr-2 h-4 w-4" />
+                                        {/* cspell:disable-next-line */}
+                                        Filter Status Pekerjaan
+                                    </Button>
+                                )}
+                                label={
+                                    <div className="flex items-center gap-2">
+                                        <ListFilter className="mr-2 h-4 w-4" />
+                                        {/* cspell:disable-next-line */}
+                                        Status:
+                                    </div>
+                                }
+                                color="gray"
+                                size="sm"
+                            >
+                                <DropdownHeader>
+                                    {/* cspell:disable-next-line */}
+                                    <span className="block text-sm font-semibold">Filter Status:</span>
+                                </DropdownHeader>
+
+                                {filterOptions.map((option) => (
+                                    <DropdownItem key={option.value} className="p-0">
+                                        <div className="flex w-full items-center p-2">
+                                            <Checkbox
+                                                id={`filter-${option.value}`}
+                                                checked={filterStatus.includes(option.value)}
+                                                onChange={() => handleFilterChange(option.value)}
+                                                className="mr-3"
+                                            />
+                                            <label htmlFor={`filter-${option.value}`} className="flex-1 cursor-pointer text-sm">
+                                                {option.label}
+                                            </label>
+                                        </div>
+                                    </DropdownItem>
+                                ))}
+                            </Dropdown>
+
+                            <Dropdown
+                                renderTrigger={() => (
+                                    <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
                                         {getSortIcon()}
                                         {/* cspell:disable-next-line */}
                                         {getCurrentSortLabel()}
@@ -206,7 +290,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             >
                                 <DropdownHeader>
                                     {/* cspell:disable-next-line */}
-                                    <span className="block text-sm font-semibold">Pilih Kolom:</span>
+                                    <span className="block text-sm font-semibold">Berdasarkan:</span>
                                 </DropdownHeader>
 
                                 {sortOptions.map((option) => (
@@ -228,7 +312,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                     <div className="flex items-center gap-2">
                                         {getSortIcon()}
                                         {/* cspell:disable-next-line */}
-                                        <span>Toggle Arah: {sortDirection === 'asc' ? 'A-Z → Z-A' : 'Z-A → A-Z'}</span>
+                                        <span>Arah Urutan: {sortDirection === 'asc' ? 'A-Z → Z-A' : 'Z-A → A-Z'}</span>
                                     </div>
                                 </DropdownItem>
                             </Dropdown>

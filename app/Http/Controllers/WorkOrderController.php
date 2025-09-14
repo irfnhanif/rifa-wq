@@ -12,12 +12,19 @@ class WorkOrderController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
-        $status = strtoupper(preg_replace('/\s+/', '_', $request->query('status', 'all')));
+        $statusInput = $request->query('status');
         $column = $request->query('column', 'created_at');
         $direction = $request->query('direction', 'desc');
 
-        $allowedStatus = ['PENDING', 'PROCESSED', 'FINISHED', 'PICKED_UP', 'ALL'];
-        $validatedStatus = in_array($status, $allowedStatus, true) ? $status : 'ALL';
+        if (!is_array($statusInput)) {
+            $statusInput = [$statusInput];
+        }
+
+        $allowedStatus = ['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP',];
+        $validatedStatus = array_values(array_filter($statusInput, function ($status) use ($allowedStatus) {
+            return is_string($status) && in_array($status, $allowedStatus, true);
+        }));
+
         $allowedColumns = ['order_title', 'customer_name', 'created_at', 'order_deadline', 'order_status'];
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
@@ -35,8 +42,10 @@ class WorkOrderController extends Controller
             });
         }
 
-        if ($validatedStatus !== 'ALL') {
-            $query->where('order_status', $validatedStatus);
+        if (!count($validatedStatus) === 0) {
+            foreach ($validatedStatus as $status) {
+                $query->where('order_status', $status);
+            }
         }
 
         $workOrders = $query
