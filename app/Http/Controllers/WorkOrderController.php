@@ -29,7 +29,7 @@ class WorkOrderController extends Controller
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
-        $query = WorkOrder::query()->with('user:id,username');
+        $query = WorkOrder::query()->with('user:id,name');
 
         if ($search !== '') {
             $term = addcslashes($search, '\%_');
@@ -42,16 +42,31 @@ class WorkOrderController extends Controller
             });
         }
 
-        if (!count($validatedStatus) === 0) {
-            foreach ($validatedStatus as $status) {
-                $query->where('order_status', $status);
-            }
+        if (count($validatedStatus) > 0) {
+            $query->whereIn('order_status', $validatedStatus);
         }
 
         $workOrders = $query
             ->orderBy($validatedColumn, $validatedDirection)
             ->paginate(10)
             ->withQueryString();
+
+        $workOrders->getCollection()->transform(function (WorkOrder $workOrder) {
+            return [
+                'id' => $workOrder->id,
+                'customerName' => $workOrder->customer_name,
+                'orderTitle' => $workOrder->order_title,
+                'orderDescription' => $workOrder->order_description,
+                'printingSize' => $workOrder->printing_size,
+                'printingMaterial' => $workOrder->printing_material,
+                'orderDeadline' => $workOrder->order_deadline,
+                'orderStatus' => $workOrder->order_status,
+                'orderCost' => $workOrder->order_cost,
+                'createdAt' => $workOrder->created_at,
+                'updatedAt' => $workOrder->updated_at,
+                'user' => $workOrder->user ? ['id' => $workOrder->user->id, 'name' => $workOrder->user->name] : null,
+            ];
+        });
 
         $queueCount = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->count();
         $dailyRevenue = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->sum('order_cost');
@@ -78,7 +93,7 @@ class WorkOrderController extends Controller
             'customer_name' => 'required|string|min:2|max:255',
             'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
             'order_title' => 'required|string|min:2|max:255',
-            'order_description' => 'string|min:2',
+            'order_description' => 'nullable|string|min:2',
             'printing_size' => 'required|max:10',
             'printing_material' => 'required|string|min:2|max:255',
             'order_deadline' => 'required|date|after:today',

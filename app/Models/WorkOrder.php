@@ -12,6 +12,7 @@ class WorkOrder extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'user_id',
         'customer_name',
         'whatsapp_number',
         'order_title',
