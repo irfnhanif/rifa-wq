@@ -2,14 +2,14 @@
 import { WorkOrder } from '@/types/WorkOrder';
 import { Datepicker, Label, Select, TextInput, Textarea } from 'flowbite-react';
 import { CalendarDays, Phone, Printer, Ruler, User } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 const Required = () => <span className="text-[#C70036]">*</span>;
 
 interface WorkOrderFormProps {
     initialData?: Partial<WorkOrder> | null;
     onSubmit: (data: Partial<WorkOrder>) => void;
-    onCancel: () => void;
+    formMethod: string;
 }
 
 interface AdditionalEditFieldsProps {
@@ -51,7 +51,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
     );
 };
 
-const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, onCancel }) => {
+const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, formMethod}) => {
     const [formData, setFormData] = useState<Partial<WorkOrder>>({
         customerName: '',
         whatsappNumber: '',
@@ -60,7 +60,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
         printingMaterial: '',
         orderCost: null,
         orderDeadline: new Date(),
-        orderDescription: null,
+        orderDescription: '',
     });
 
     useEffect(() => {
@@ -74,20 +74,26 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleSelectChange = (value: ChangeEvent<HTMLSelectElement>, name: string) => {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+
     const handleDateChange = (date: Date | null) => {
         if (!date) {
             return;
         }
-        setFormData((prev) => ({ ...prev, deadline: date }));
+        setFormData((prev) => ({ ...prev, orderDeadline: date }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         onSubmit(formData);
     };
 
     return (
-        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4">
+        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4" method={formMethod}>
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="customerName">
@@ -161,18 +167,19 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                             Bahan Cetak <Required />
                         </Label>
                     </div>
-                    <Select
+                    <select
                         id="printingMaterial"
                         name="printingMaterial"
                         value={formData.printingMaterial || ''}
                         onChange={handleChange}
-                        className="w-full"
+                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                         required
                     >
+                        <option value="">Select Material</option>
                         <option value="HVS">HVS</option>
                         <option value="Flexi">Flexi</option>
                         <option value="Sticker">Sticker</option>
-                    </Select>
+                    </select>
                 </div>
             </div>
 
@@ -192,8 +199,8 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                     onChange={handleDateChange}
                     icon={CalendarDays}
                     language="id-ID"
-                    labelTodayButton='Hari Ini'
-                    labelClearButton='Bersihkan'
+                    labelTodayButton="Hari Ini"
+                    labelClearButton="Bersihkan"
                     required
                 />
             </div>
@@ -203,7 +210,13 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, on
                     <Label htmlFor="orderDescription">Deskripsi Tambahan</Label>
                     <span className="text-xs text-[#6A7282]">Opsional</span>
                 </div>
-                <Textarea id="orderDescription" name="orderDescription" placeholder="Tulis deskripsi tambahan disini..." rows={4} />
+                <Textarea
+                    id="orderDescription"
+                    name="orderDescription"
+                    onChange={handleChange}
+                    placeholder="Tulis deskripsi tambahan disini..."
+                    rows={4}
+                />
             </div>
             {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
         </form>

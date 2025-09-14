@@ -1,8 +1,8 @@
 // resources/js/components/WorkOrderModal.tsx
+import { WorkOrder } from '@/types/WorkOrder';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
 import { Save } from 'lucide-react';
 import React from 'react';
-import { WorkOrder } from '@/types/WorkOrder';
 import WorkOrderForm from './WorkOrderForm';
 
 interface WorkOrderModalProps {
@@ -16,12 +16,13 @@ interface WorkOrderModalProps {
 const WorkOrderModal: React.FC<WorkOrderModalProps> = ({ mode, show, onClose, onSubmit, initialData }) => {
     const title = mode === 'add' ? 'Tambah Pekerjaan Baru' : 'Edit Pekerjaan';
     const submitButtonText = mode === 'add' ? 'Tambah Pekerjaan' : 'Simpan Perubahan';
+    const formMethod = mode === 'add' ? 'POST' : 'PUT';
 
     return (
         <Modal show={show} size="3xl" onClose={onClose} popup>
-            <ModalHeader className="border-b border-[#E5E7EB] m-3">{title}</ModalHeader>
+            <ModalHeader className="m-3 border-b border-[#E5E7EB]">{title}</ModalHeader>
             <ModalBody>
-                <WorkOrderForm initialData={initialData} onSubmit={onSubmit} onCancel={onClose} />
+                <WorkOrderForm initialData={initialData} onSubmit={onSubmit} formMethod={formMethod} />
             </ModalBody>
             <ModalFooter className="border-t border-[#E5E7EB]">
                 <Button
