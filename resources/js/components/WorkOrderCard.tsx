@@ -8,7 +8,6 @@ import React from 'react';
 interface WorkOrderCardProps {
     order: WorkOrder;
     onEdit: (order: WorkOrder) => void;
-    // onMarkComplete?: (order: WorkOrder) => void;
 }
 
 const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
@@ -22,17 +21,18 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
     const { id, customerName, orderTitle, orderDeadline, orderStatus } = order;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
-    const handleMarkComplete = (id: string, status: Status) => {
+    const handleMarkComplete = (id: string, status: Status) => () => {
 
     }
 
     const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', {day: 'numeric', month: '2-digit', year: 'numeric'})
 
-    const renderActionButton = () => {
+    const renderActionButton = (id: string, orderStatus: Status) => {
         if (orderStatus === 'PENDING') {
             return (
                 <Button
                     className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300"
+                    onClick={handleMarkComplete(id, orderStatus)}
                 >
                     <Hourglass className="mr-2 h-4 w-4" />
                     Mulai Proses
@@ -42,6 +42,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
             return (
                 <Button
                     className="bg-[#047857] text-[#FFFFFF] hover:bg-green-800 focus:ring-4 focus:ring-green-300"
+                    onClick={handleMarkComplete(id, orderStatus)}
                 >
                     <Check className="mr-2 h-4 w-4" />
                     {/* cspell:disable-next-line */}
@@ -52,6 +53,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
             return (
                 <Button
                     className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                    onClick={handleMarkComplete(id, orderStatus)}
                 >
                     <Truck className="mr-2 h-4 w-4" />
                     Tandai Diambil
@@ -84,7 +86,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                {renderActionButton()}
+                {renderActionButton(id, orderStatus)}
             </div>
         </div>
     );

@@ -184,13 +184,24 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     };
 
     const handleSubmit = (data: Partial<WorkOrder>) => {
+        const snakeCaseConvertedData = {
+            customer_name: data.customerName,
+            whatsapp_number: data.whatsappNumber,
+            order_title: data.orderTitle,
+            order_description: data.orderDescription || null,
+            printing_size: data.printingSize,
+            printing_material: data.printingMaterial,
+            order_deadline: data.orderDeadline,
+            ...(data.orderStatus && { order_status: data.orderStatus }),
+            ...(data.orderCost && { order_cost: data.orderCost }),
+        };
+
         if (modalMode === 'add') {
-            console.log('Adding new order:', data);
-            // router.post('/work-orders', data);
+            router.post(route('work-orders.store'), snakeCaseConvertedData);
         } else {
-            console.log('Updating order:', data);
-            // router.put(`/work-orders/${editingOrder?.id}`, data);
+            router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData);
         }
+
         handleCloseModal();
     };
 
