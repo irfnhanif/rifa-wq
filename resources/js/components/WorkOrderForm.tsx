@@ -13,7 +13,7 @@ interface WorkOrderFormProps {
 }
 
 interface AdditionalEditFieldsProps {
-    orderStatus: string;
+    orderStatus: string | undefined;
     orderCost: Partial<number> | null | undefined;
     handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
@@ -31,12 +31,19 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                         Status <Required />
                     </Label>
                 </div>
-                <Select id="orderStatus" name="orderStatus" value={orderStatus} onChange={handleChange} icon={Printer} className="w-full" required>
+                <select
+                    id="orderStatus"
+                    name="orderStatus"
+                    value={orderStatus}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                    required
+                >
                     <option value="PENDING">Tertunda</option>
                     <option value="IN_PROCESS">Dalam Proses</option>
                     <option value="FINISHED">Selesai</option>
                     <option value="PICKED_UP">Telah Diambil</option>
-                </Select>
+                </select>
             </div>
 
             <div>
@@ -45,7 +52,15 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                         Biaya Pekerjaan <Required />
                     </Label>
                 </div>
-                <TextInput id="orderCost" name="orderCost" value={orderCost?.toString()} onChange={handleChange} placeholder="" required />
+                <TextInput
+                    id="orderCost"
+                    name="orderCost"
+                    disabled={orderStatus !== 'FINISHED' && orderStatus !== 'PICKED_UP'}
+                    value={orderCost?.toString()}
+                    onChange={handleChange}
+                    placeholder=""
+                    required
+                />
             </div>
         </>
     );
@@ -58,6 +73,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
         orderTitle: '',
         printingSize: '',
         printingMaterial: '',
+        orderStatus: 'PENDING',
         orderCost: null,
         orderDeadline: new Date(),
         orderDescription: '',
@@ -73,11 +89,6 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
-    const handleSelectChange = (value: ChangeEvent<HTMLSelectElement>, name: string) => {
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
 
     const handleDateChange = (date: Date | null) => {
         if (!date) {
@@ -184,7 +195,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
             </div>
 
             {initialData?.orderStatus && (
-                <AdditionalEditFields orderStatus={initialData.orderStatus} orderCost={initialData.orderCost} handleChange={handleChange} />
+                <AdditionalEditFields orderStatus={formData.orderStatus} orderCost={formData.orderCost} handleChange={handleChange} />
             )}
 
             <div>
