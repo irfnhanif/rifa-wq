@@ -20,6 +20,8 @@ class WorkOrder extends Model
         'printing_size',
         'printing_material',
         'order_deadline',
+        'order_status',
+        'order_cost'
     ];
 
     public function user(): BelongsTo

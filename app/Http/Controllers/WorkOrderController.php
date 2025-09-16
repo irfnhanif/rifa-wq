@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class WorkOrderController extends Controller
@@ -55,6 +56,7 @@ class WorkOrderController extends Controller
             return [
                 'id' => $workOrder->id,
                 'customerName' => $workOrder->customer_name,
+                'whatsappNumber' => $workOrder->whatsapp_number,
                 'orderTitle' => $workOrder->order_title,
                 'orderDescription' => $workOrder->order_description,
                 'printingSize' => $workOrder->printing_size,
@@ -127,6 +129,8 @@ class WorkOrderController extends Controller
             'order_description' => 'string|min:2',
             'printing_size' => 'required|max:10',
             'printing_material' => 'required|string|min:2|max:255',
+            'order_status' => ['required', Rule::in(['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP'])],
+            'order_cost' => 'nullable|integer|min:0',
             'order_deadline' => 'required|date|after:today',
         ]);
 
