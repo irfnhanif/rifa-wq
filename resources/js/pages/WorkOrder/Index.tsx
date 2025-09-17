@@ -32,7 +32,7 @@ interface WorkOrderIndexProps {
 }
 
 const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filters }) => {
-    const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
+    const [formModalMode, setFormModalMode] = useState<'add' | 'edit'>('add');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
 
@@ -60,13 +60,13 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     ];
 
     const handleOpenAddModal = () => {
-        setModalMode('add');
+        setFormModalMode('add');
         setEditingOrder(null);
         setIsModalOpen(true);
     };
 
     const handleOpenEditModal = (order: WorkOrder) => {
-        setModalMode('edit');
+        setFormModalMode('edit');
         setEditingOrder(order);
         setIsModalOpen(true);
     };
@@ -194,7 +194,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             order_deadline: data.orderDeadline,
         };
 
-        if (modalMode === 'add') {
+        if (formModalMode === 'add') {
             router.post(route('work-orders.store'), snakeCaseConvertedData);
         } else {
             if (data.orderStatus !== undefined && data.orderStatus !== null) {
@@ -362,7 +362,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     </div>
                 </div>
             </AppLayout>
-            <WorkOrderFormModal show={isModalOpen} onClose={handleCloseModal} mode={modalMode} onSubmit={handleSubmit} initialData={editingOrder} />
+            <WorkOrderFormModal show={isModalOpen} onClose={handleCloseModal} mode={formModalMode} onSubmit={handleSubmit} initialData={editingOrder} />
         </>
     );
 };
