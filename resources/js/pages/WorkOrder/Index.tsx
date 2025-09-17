@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
-import WorkOrderModal from '@/components/WorkOrderModal';
+import WorkOrderFormModal from '@/components/WorkOrderModal';
 import AppLayout from '@/layouts/AppLayout';
 import { debounce } from 'lodash';
 import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, ListFilter, Plus, Search } from 'lucide-react';
@@ -362,7 +362,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     </div>
                 </div>
             </AppLayout>
-            <WorkOrderModal show={isModalOpen} onClose={handleCloseModal} mode={modalMode} onSubmit={handleSubmit} initialData={editingOrder} />
+            <WorkOrderFormModal show={isModalOpen} onClose={handleCloseModal} mode={modalMode} onSubmit={handleSubmit} initialData={editingOrder} />
         </>
     );
 };

@@ -21,11 +21,9 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
     const { id, customerName, orderTitle, orderDeadline, orderStatus } = order;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
-    const handleMarkComplete = (id: string, status: Status) => () => {
+    const handleMarkComplete = (id: string, status: Status) => () => {};
 
-    }
-
-    const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', {day: 'numeric', month: '2-digit', year: 'numeric'})
+    const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
     const renderActionButton = (id: string, orderStatus: Status) => {
         if (orderStatus === 'PENDING') {
@@ -35,6 +33,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
                     onClick={handleMarkComplete(id, orderStatus)}
                 >
                     <Hourglass className="mr-2 h-4 w-4" />
+                    {/* cspell:disable-next-line */}
                     Mulai Proses
                 </Button>
             );
@@ -56,6 +55,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
                     onClick={handleMarkComplete(id, orderStatus)}
                 >
                     <Truck className="mr-2 h-4 w-4" />
+                    {/* cspell:disable-next-line */}
                     Tandai Diambil
                 </Button>
             );
@@ -86,7 +86,10 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order, onEdit }) => {
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                {renderActionButton(id, orderStatus)}
+                <div className="w-[160px]">
+                    {/* Fixed width container */}
+                    {renderActionButton(id, orderStatus)}
+                </div>
             </div>
         </div>
     );

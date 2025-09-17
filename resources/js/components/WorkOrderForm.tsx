@@ -39,16 +39,19 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                     required
                 >
+                    {/* cspell:disable */}
                     <option value="PENDING">Tertunda</option>
                     <option value="IN_PROCESS">Dalam Proses</option>
                     <option value="FINISHED">Selesai</option>
                     <option value="PICKED_UP">Telah Diambil</option>
+                    {/* cspell:enable */}
                 </select>
             </div>
 
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="orderCost">
+                        {/* cspell:disable-next-line */}
                         Biaya Pekerjaan <Required />
                     </Label>
                 </div>

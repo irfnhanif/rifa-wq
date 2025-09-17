@@ -5,7 +5,7 @@ import { Save } from 'lucide-react';
 import React from 'react';
 import WorkOrderForm from './WorkOrderForm';
 
-interface WorkOrderModalProps {
+interface WorkOrderFormModalProps {
     mode: 'add' | 'edit';
     show: boolean;
     onClose: () => void;
@@ -13,7 +13,7 @@ interface WorkOrderModalProps {
     initialData?: Partial<WorkOrder> | null;
 }
 
-const WorkOrderModal: React.FC<WorkOrderModalProps> = ({ mode, show, onClose, onSubmit, initialData }) => {
+const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({ mode, show, onClose, onSubmit, initialData }) => {
     const title = mode === 'add' ? 'Tambah Pekerjaan Baru' : 'Edit Pekerjaan';
     const submitButtonText = mode === 'add' ? 'Tambah Pekerjaan' : 'Simpan Perubahan';
     const formMethod = mode === 'add' ? 'POST' : 'PUT';
@@ -41,4 +41,4 @@ const WorkOrderModal: React.FC<WorkOrderModalProps> = ({ mode, show, onClose, on
     );
 };
 
-export default WorkOrderModal;
+export default WorkOrderFormModal;
