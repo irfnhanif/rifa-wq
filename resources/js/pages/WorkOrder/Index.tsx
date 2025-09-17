@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
-import WorkOrderFormModal from '@/components/WorkOrderModal';
+import WorkOrderFormModal from '@/components/WorkOrderFormModal';
 import AppLayout from '@/layouts/AppLayout';
 import { debounce } from 'lodash';
 import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, ListFilter, Plus, Search } from 'lucide-react';
