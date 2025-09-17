@@ -27,10 +27,10 @@ interface WorkOrderDetailModalProps {
     workOrder: WorkOrder | null;
     onClose: () => void;
     onEdit: (workOrder: WorkOrder) => void;
-    onDelete: (workOrder: WorkOrder) => void;
+    // onDelete: (workOrder: WorkOrder) => void;
 }
 
-const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit, onDelete }) => {
+const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit, }) => {
     if (!workOrder) return null;
 
     const formattedOrderDeadline = new Date(workOrder.orderDeadline).toLocaleDateString('id-ID', {
@@ -43,8 +43,8 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
     const daysRemainingText = diffDays > 0 ? `${diffDays} hari lagi` : diffDays === 0 ? 'Hari ini' : `${Math.abs(diffDays)} hari lewat`;
 
     return (
-        <Modal show={show} size="4xl" onClose={onClose} popup>
-            <ModalHeader className="border-b border-[#E5E7EB]">Detail Pekerjaan</ModalHeader>
+        <Modal show={show} size="5xl" onClose={onClose} popup>
+            <ModalHeader className="m-3 border-b border-[#E5E7EB]">Detail Pekerjaan</ModalHeader>
             <ModalBody className="py-6">
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-4 border-b border-[#E5E7EB] pb-6">
@@ -79,7 +79,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                     </div>
 
                     <div>
-                        <DetailItem icon={Wallet} label="Biaya Pekerjaan" value={workOrder.orderCost || "-"} />
+                        <DetailItem icon={Wallet} label="Biaya Pekerjaan" value={workOrder.orderCost || '-'} />
                     </div>
                 </div>
             </ModalBody>
@@ -88,10 +88,10 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
+                {/* <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
                     <Trash2 className="mr-2 h-4 w-4" />
                     Hapus
-                </Button>
+                </Button> */}
             </ModalFooter>
         </Modal>
     );

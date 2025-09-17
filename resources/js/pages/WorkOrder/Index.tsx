@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
+import WorkOrderDetailModal from '@/components/WorkOrderDetailModal';
 import WorkOrderFormModal from '@/components/WorkOrderFormModal';
 import AppLayout from '@/layouts/AppLayout';
 import { debounce } from 'lodash';
@@ -33,8 +34,10 @@ interface WorkOrderIndexProps {
 
 const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filters }) => {
     const [formModalMode, setFormModalMode] = useState<'add' | 'edit'>('add');
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
 
     const [search, setSearch] = useState(filters.search || '');
     const [sortColumn, setSortColumn] = useState(filters.column || 'created_at');
@@ -60,20 +63,34 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     ];
 
     const handleOpenAddModal = () => {
+        handleCloseDetailModal();
+        setIsDetailModalOpen(false);
         setFormModalMode('add');
         setEditingOrder(null);
-        setIsModalOpen(true);
+        setIsFormModalOpen(true);
     };
 
     const handleOpenEditModal = (order: WorkOrder) => {
+        handleCloseDetailModal();
         setFormModalMode('edit');
         setEditingOrder(order);
-        setIsModalOpen(true);
+        setIsFormModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const handleOpenDetailModal = (order: WorkOrder) => {
+        handleCloseFormModal();
+        setSelectedOrder(order);
+        setIsDetailModalOpen(true);
+    };
+
+    const handleCloseFormModal = () => {
+        setIsFormModalOpen(false);
         setEditingOrder(null);
+    };
+
+    const handleCloseDetailModal = () => {
+        setIsDetailModalOpen(false);
+        setSelectedOrder(null);
     };
 
     const getCurrentSortLabel = () => {
@@ -210,7 +227,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData);
         }
 
-        handleCloseModal();
+        handleCloseFormModal();
     };
 
     useEffect(() => {
@@ -348,7 +365,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                     <div className="flex flex-col gap-4">
                         {workOrders.data.map((order) => (
-                            <WorkOrderCard key={order.id} order={order} onEdit={handleOpenEditModal} />
+                            <WorkOrderCard key={order.id} order={order} onEdit={handleOpenEditModal} onClick={handleOpenDetailModal} />
                         ))}
                     </div>
 
@@ -362,7 +379,14 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     </div>
                 </div>
             </AppLayout>
-            <WorkOrderFormModal show={isModalOpen} onClose={handleCloseModal} mode={formModalMode} onSubmit={handleSubmit} initialData={editingOrder} />
+            <WorkOrderFormModal
+                show={isFormModalOpen}
+                onClose={handleCloseFormModal}
+                mode={formModalMode}
+                onSubmit={handleSubmit}
+                initialData={editingOrder}
+            />
+            <WorkOrderDetailModal show={isDetailModalOpen} workOrder={selectedOrder} onClose={handleCloseDetailModal} onEdit={handleOpenEditModal} />
         </>
     );
 };
