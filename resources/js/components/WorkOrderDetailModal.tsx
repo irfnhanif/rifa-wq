@@ -1,6 +1,6 @@
 // resources/js/components/WorkOrderDetailModal.tsx
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
-import { Activity, CalendarDays, FileText, Layers, LucideIcon, Phone, Ruler, SquarePen, StickyNote, Trash2, User, Wallet } from 'lucide-react';
+import { Badge, Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
+import { Activity, CalendarDays, FileText, Layers, LucideIcon, NotepadText, Phone, Ruler, SquarePen, User, Wallet } from 'lucide-react';
 import React from 'react';
 import { WorkOrder } from '../types/WorkOrder';
 
@@ -16,9 +16,9 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon: Icon, label, value, class
     <div className={`flex flex-col gap-1 ${className}`}>
         <div className="flex items-center gap-1.5">
             <Icon className="h-4 w-4 text-[#6A7282]" />
-            <span className="text-base text-[#6A7282]">{label}</span>
+            <span className="text-sm text-[#6A7282]">{label}</span>
         </div>
-        <div className="text-lg font-semibold text-[#4A5565]">{value || '-'}</div>
+        <div className="font-medium text-[#4A5565]">{value || '-'}</div>
     </div>
 );
 
@@ -30,8 +30,15 @@ interface WorkOrderDetailModalProps {
     // onDelete: (workOrder: WorkOrder) => void;
 }
 
-const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit, }) => {
+const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit }) => {
     if (!workOrder) return null;
+
+    const statusLabelOptions = new Map([
+        ['PENDING', 'Ditunda'],
+        ['IN_PROCESS', 'Dalam Proses'],
+        ['FINISHED', 'Selesai'],
+        ['PICKED_UP', 'Sudah Diambil'],
+    ]);
 
     const formattedOrderDeadline = new Date(workOrder.orderDeadline).toLocaleDateString('id-ID', {
         day: '2-digit',
@@ -40,6 +47,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
     });
 
     const diffDays = Math.ceil((new Date(workOrder.orderDeadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    const daysRemainingBadgeColor = diffDays > 0 ? 'success' : diffDays === 0 ? 'warning' : 'failure';
     const daysRemainingText = diffDays > 0 ? `${diffDays} hari lagi` : diffDays === 0 ? 'Hari ini' : `${Math.abs(diffDays)} hari lewat`;
 
     return (
@@ -54,7 +62,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                         </div>
                         <div className="flex flex-col gap-6">
                             <DetailItem icon={FileText} label="Judul Pekerjaan" value={workOrder.orderTitle} />
-                            <DetailItem icon={StickyNote} label="Deskripsi" value={workOrder.orderDescription || '-'} />
+                            <DetailItem icon={NotepadText} label="Deskripsi" value={workOrder.orderDescription || '-'} />
                         </div>
                     </div>
 
@@ -70,11 +78,11 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                                 value={
                                     <div className="flex items-center gap-4">
                                         <span>{formattedOrderDeadline}</span>
-                                        <span className="text-base font-medium text-[#6A7282]">{daysRemainingText}</span>
+                                        <Badge color={daysRemainingBadgeColor}>{daysRemainingText}</Badge>
                                     </div>
                                 }
                             />
-                            <DetailItem icon={Activity} label="Status" value={workOrder.orderStatus} />
+                            <DetailItem icon={Activity} label="Status" value={statusLabelOptions.get(workOrder.orderStatus)} />
                         </div>
                     </div>
 
