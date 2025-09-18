@@ -48,7 +48,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     });
 
     const sortOptions = [
-        { value: 'created_at', label: 'Tanggal Dibuat' },
         { value: 'order_deadline', label: 'Deadline' },
         { value: 'customer_name', label: 'Nama Pelanggan' },
         { value: 'order_title', label: 'Judul Pekerjaan' },
@@ -267,21 +266,12 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                         <ListFilter className="mr-2 h-4 w-4" />
                                         {/* cspell:disable-next-line */}
                                         Filter Status Pekerjaan
                                     </Button>
                                 )}
-                                label={
-                                    <div className="flex items-center gap-2">
-                                        <ListFilter className="mr-2 h-4 w-4" />
-                                        {/* cspell:disable-next-line */}
-                                        Status:
-                                    </div>
-                                }
-                                color="gray"
-                                size="sm"
                             >
                                 <DropdownHeader>
                                     {/* cspell:disable-next-line */}
@@ -297,7 +287,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                                 onChange={() => handleFilterChange(option.value)}
                                                 className="mr-3"
                                             />
-                                            <label htmlFor={`filter-${option.value}`} className="flex-1 cursor-pointer text-sm">
+                                            <label htmlFor={`filter-${option.value}`} className="flex-1 cursor-pointer text-left text-sm">
                                                 {option.label}
                                             </label>
                                         </div>
@@ -307,7 +297,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                         {getSortIcon()}
                                         {/* cspell:disable-next-line */}
                                         {getCurrentSortLabel()}
