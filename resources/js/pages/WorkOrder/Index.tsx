@@ -1,5 +1,5 @@
 import { WorkOrder } from '@/types/WorkOrder';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -39,9 +39,12 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
 
+    const [submittedData, setSubmittedData] = useState<Partial<WorkOrder> | null>(null);
+    const { errors } = usePage<{ errors: Record<string, string> }>().props;
+
     const [search, setSearch] = useState(filters.search || '');
-    const [sortColumn, setSortColumn] = useState(filters.column || 'created_at');
-    const [sortDirection, setSortDirection] = useState(filters.direction || 'desc');
+    const [sortColumn, setSortColumn] = useState(filters.column || 'order_deadline');
+    const [sortDirection, setSortDirection] = useState(filters.direction || 'asc');
     const [filterStatus, setFilterStatus] = useState<string[]>(() => {
         if (!filters.status || filters.status === 'all') return [];
         return Array.isArray(filters.status) ? filters.status : [filters.status];
@@ -211,7 +214,18 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         };
 
         if (formModalMode === 'add') {
-            router.post(route('work-orders.store'), snakeCaseConvertedData);
+            router.post(route('work-orders.store'), snakeCaseConvertedData, {
+                preserveState: true,
+                onError: (errors) => {
+                    setSubmittedData(data);
+                    setIsFormModalOpen(true);
+                    console.log('Validation errors:', errors);
+                },
+                onSuccess: () => {
+                    setSubmittedData(null);
+                    handleCloseFormModal();
+                },
+            });
         } else {
             if (data.orderStatus !== undefined && data.orderStatus !== null) {
                 snakeCaseConvertedData.order_status = data.orderStatus;
@@ -220,13 +234,28 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             if (data.orderCost !== undefined) {
                 snakeCaseConvertedData.order_cost = data.orderCost === null ? null : Number(data.orderCost);
             }
-            console.log(data);
-            console.log(snakeCaseConvertedData);
 
-            router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData);
+            router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData, {
+                onError: (errors) => {
+                    setSubmittedData(data);
+                    setIsFormModalOpen(true);
+                    console.log('Validation errors:', errors);
+                },
+                onSuccess: () => {
+                    setSubmittedData(null);
+                    handleCloseFormModal();
+                },
+            });
         }
 
         handleCloseFormModal();
+    };
+
+    const getInitialData = () => {
+        if (submittedData) {
+            return submittedData;
+        }
+        return editingOrder;
     };
 
     useEffect(() => {
@@ -374,7 +403,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 onClose={handleCloseFormModal}
                 mode={formModalMode}
                 onSubmit={handleSubmit}
-                initialData={editingOrder}
+                initialData={getInitialData()}
+                errors={errors}
             />
             <WorkOrderDetailModal show={isDetailModalOpen} workOrder={selectedOrder} onClose={handleCloseDetailModal} onEdit={handleOpenEditModal} />
         </>
