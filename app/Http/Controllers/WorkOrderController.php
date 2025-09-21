@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreWorkOrderRequest;
+use App\Http\Requests\UpdateWorkOrderRequest;
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class WorkOrderController extends Controller
@@ -89,26 +92,21 @@ class WorkOrderController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreWorkOrderRequest $request)
     {
-        $validated = $request->validate([
-            'customer_name' => 'required|string|min:2|max:255',
-            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
-            'order_title' => 'required|string|min:2|max:255',
-            'order_description' => 'nullable|string|min:2',
-            'printing_size' => 'required|max:10',
-            'printing_material' => 'required|string|min:2|max:255',
-            'order_deadline' => 'required|date|after:today',
-        ]);
+        try {
+            $validated = $request->validate();
 
-        $validated['user_id'] = $request->user()->id;
+            $validated['user_id'] = $request->user()->id;
 
-        $workOrder = WorkOrder::create($validated);
+            $workOrder = WorkOrder::create($validated);
 
-        // cspell:disable-next-line
-        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil ditambahkan", $workOrder['order_title']));
+            // cspell:disable-next-line
+            return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil ditambahkan", $workOrder['order_title']));
+        } catch (ValidationException $e) {
+            throw $e;
+        }
     }
-
 
     // This method is always called by AJAX request (API)
     public function show(string $id)
@@ -118,26 +116,21 @@ class WorkOrderController extends Controller
         return response()->json($workOrder);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateWorkOrderRequest $request, string $id)
     {
-        $workOrder = WorkOrder::findOrFail($id);
+        try {
+            $workOrder = WorkOrder::findOrFail($id);
 
-        $validated = $request->validate([
-            'customer_name' => 'required|string|min:2|max:255',
-            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
-            'order_title' => 'required|string|min:2|max:255',
-            'order_description' => 'string|min:2',
-            'printing_size' => 'required|max:10',
-            'printing_material' => 'required|string|min:2|max:255',
-            'order_status' => ['required', Rule::in(['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP'])],
-            'order_cost' => 'nullable|integer|min:0',
-            'order_deadline' => 'required|date|after:today',
-        ]);
+            $validated = $request->validate();
 
-        $workOrder->update($validated);
+            $workOrder->update($validated);
 
-        // cspell:disable-next-line
-        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil diperbarui", $validated['order_title']));
+            // cspell:disable-next-line
+            return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil diperbarui", $validated['order_title']));
+        } catch (ValidationException $e) {
+            throw $e;
+        }
+
     }
 
     public function destroy(string $id)
