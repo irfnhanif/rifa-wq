@@ -88,6 +88,17 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const handleCloseFormModal = () => {
         setIsFormModalOpen(false);
         setEditingOrder(null);
+        setSubmittedData(null);
+        router.get(
+            window.location.pathname,
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+                only: ['errors'],
+                replace: true,
+            },
+        );
     };
 
     const handleCloseDetailModal = () => {
@@ -260,8 +271,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
     useEffect(() => {
         setSearch(filters.search || '');
-        setSortColumn(filters.column || 'created_at');
-        setSortDirection(filters.direction || 'desc');
+        setSortColumn(filters.column || 'order_deadline');
+        setSortDirection(filters.direction || 'asc');
         const statusFilter = filters.status;
         if (!statusFilter) {
             setFilterStatus([]);

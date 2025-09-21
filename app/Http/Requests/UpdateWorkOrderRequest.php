@@ -16,7 +16,7 @@ class UpdateWorkOrderRequest extends FormRequest
     {
         return [
             'customer_name' => 'required|string|min:2|max:255',
-            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
+            'whatsapp_number' => 'required|digits_between:8,20',
             'order_title' => 'required|string|min:2|max:255',
             'order_description' => 'nullable|string|min:2',
             'printing_size' => 'required|max:10',
@@ -45,9 +45,9 @@ class UpdateWorkOrderRequest extends FormRequest
             'order_status.in' => 'Status pesanan tidak valid.',
             'order_cost.integer' => 'Biaya harus berupa angka.',
             'order_cost.min' => 'Biaya tidak boleh negatif.',
-            'order_deadline.required' => 'Batas waktu harus diisi.',
-            'order_deadline.date' => 'Batas waktu harus berupa tanggal yang valid.',
-            'order_deadline.after' => 'Batas waktu harus setelah hari ini.',
+            'order_deadline.required' => 'Deadline pekerjaan harus diisi.',
+            'order_deadline.date' => 'Deadline pekerjaan harus berupa tanggal yang valid.',
+            'order_deadline.after' => 'Deadline pekerjaan harus setelah hari ini.',
         ];
     }
 
@@ -62,7 +62,7 @@ class UpdateWorkOrderRequest extends FormRequest
             'printing_material' => 'bahan cetak',
             'order_status' => 'status pesanan',
             'order_cost' => 'biaya pesanan',
-            'order_deadline' => 'batas waktu pesanan',
+            'order_deadline' => 'deadline pekerjaan',
         ];
     }
 }
