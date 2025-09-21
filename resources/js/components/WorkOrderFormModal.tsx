@@ -11,18 +11,26 @@ interface WorkOrderFormModalProps {
     onClose: () => void;
     onSubmit: (data: Partial<WorkOrder>) => void;
     initialData?: Partial<WorkOrder> | null;
+    errors?: Record<string, string>;
 }
 
-const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({ mode, show, onClose, onSubmit, initialData }) => {
+const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({ mode, show, onClose, onSubmit, initialData, errors = {} }) => {
     const title = mode === 'add' ? 'Tambah Pekerjaan Baru' : 'Edit Pekerjaan';
     const submitButtonText = mode === 'add' ? 'Tambah Pekerjaan' : 'Simpan Perubahan';
     const formMethod = mode === 'add' ? 'POST' : 'PUT';
+
+    const hasErrors = Object.keys(errors).length > 0;
 
     return (
         <Modal show={show} size="3xl" onClose={onClose} popup>
             <ModalHeader className="m-3 border-b border-[#E5E7EB]">{title}</ModalHeader>
             <ModalBody>
-                <WorkOrderForm initialData={initialData} onSubmit={onSubmit} formMethod={formMethod} />
+                {hasErrors && (
+                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
+                        <h3 className="text-sm font-medium text-red-800">Terdapat kesalahan pada data yang dimasukkan</h3>
+                    </div>
+                )}
+                <WorkOrderForm initialData={initialData} onSubmit={onSubmit} formMethod={formMethod} errors={errors}/>
             </ModalBody>
             <ModalFooter className="border-t border-[#E5E7EB]">
                 <Button

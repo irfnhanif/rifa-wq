@@ -1,24 +1,19 @@
 // resources/js/components/WorkOrderForm.tsx
 import { WorkOrder } from '@/types/WorkOrder';
-import { Datepicker, Label, Select, TextInput, Textarea } from 'flowbite-react';
-import { CalendarDays, Phone, Printer, Ruler, User } from 'lucide-react';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Datepicker, HelperText, Label, TextInput, Textarea } from 'flowbite-react';
+import { CalendarDays, Phone, Ruler, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 const Required = () => <span className="text-[#C70036]">*</span>;
-
-interface WorkOrderFormProps {
-    initialData?: Partial<WorkOrder> | null;
-    onSubmit: (data: Partial<WorkOrder>) => void;
-    formMethod: string;
-}
 
 interface AdditionalEditFieldsProps {
     orderStatus: string | undefined;
     orderCost: Partial<number> | null | undefined;
     handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    errors?: Record<string, string>;
 }
 
-const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus, orderCost, handleChange }) => {
+const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus, orderCost, handleChange, errors = {} }) => {
     if (!orderStatus) {
         return;
     }
@@ -37,6 +32,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     value={orderStatus}
                     onChange={handleChange}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                    color={errors.order_status ? 'failure' : undefined}
                     required
                 >
                     {/* cspell:disable */}
@@ -46,6 +42,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     <option value="PICKED_UP">Telah Diambil</option>
                     {/* cspell:enable */}
                 </select>
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_status}</HelperText>
             </div>
 
             <div>
@@ -62,14 +59,23 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     value={orderCost?.toString()}
                     onChange={handleChange}
                     placeholder=""
+                    color={errors.order_cost ? 'failure' : undefined}
                     required
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_cost}</HelperText>
             </div>
         </>
     );
 };
 
-const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, formMethod}) => {
+interface WorkOrderFormProps {
+    initialData?: Partial<WorkOrder> | null;
+    onSubmit: (data: Partial<WorkOrder>) => void;
+    formMethod: string;
+    errors?: Record<string, string>;
+}
+
+const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, formMethod, errors = {} }) => {
     const [formData, setFormData] = useState<Partial<WorkOrder>>({
         customerName: '',
         whatsappNumber: '',
@@ -121,10 +127,12 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     onChange={handleChange}
                     placeholder="Isi nama pelanggan disini"
                     icon={User}
+                    color={errors.customer_name ? 'failure' : undefined}
                     required
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.customer_name}</HelperText>
             </div>
-
+            
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="whatsappNumber">
@@ -138,8 +146,10 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     onChange={handleChange}
                     placeholder="Isi nomor WA pelanggan disini"
                     icon={Phone}
+                    color={errors.whatsapp_number ? 'failure' : undefined}
                     required
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.whatsapp_number}</HelperText>
             </div>
 
             <div>
@@ -154,8 +164,10 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     value={formData.orderTitle}
                     onChange={handleChange}
                     placeholder="Isi judul order disini"
+                    color={errors.order_title ? 'failure' : undefined}
                     required
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_title}</HelperText>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -172,8 +184,10 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         onChange={handleChange}
                         placeholder="Ukuran cetak desain (Contoh: 6x4 m)"
                         icon={Ruler}
+                        color={errors.printing_size ? 'failure' : undefined}
                         required
                     />
+                    <HelperText className="mb-2 text-xs font-light text-red-800">{errors.printing_size}</HelperText>
                 </div>
                 <div>
                     <div className="mb-2 block">
@@ -187,6 +201,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         value={formData.printingMaterial || ''}
                         onChange={handleChange}
                         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                        color={errors.printing_material ? 'failure' : undefined}
                         required
                     >
                         <option value="">Select Material</option>
@@ -194,11 +209,12 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         <option value="Flexi">Flexi</option>
                         <option value="Sticker">Sticker</option>
                     </select>
+                    <HelperText className="mb-2 text-xs font-light text-red-800">{errors.printing_material}</HelperText>
                 </div>
             </div>
 
             {initialData?.orderStatus && (
-                <AdditionalEditFields orderStatus={formData.orderStatus} orderCost={formData.orderCost} handleChange={handleChange} />
+                <AdditionalEditFields orderStatus={formData.orderStatus} orderCost={formData.orderCost} handleChange={handleChange} errors={errors} />
             )}
 
             <div>
@@ -215,8 +231,10 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     language="id-ID"
                     labelTodayButton="Hari Ini"
                     labelClearButton="Bersihkan"
+                    color={errors.order_deadline ? 'failure' : undefined}
                     required
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_deadline}</HelperText>
             </div>
 
             <div>
@@ -230,7 +248,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     onChange={handleChange}
                     placeholder="Tulis deskripsi tambahan disini..."
                     rows={4}
+                    color={errors.order_description ? 'failure' : undefined}
                 />
+                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_description}</HelperText>
             </div>
             {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
         </form>
