@@ -1,6 +1,6 @@
 import { WorkOrder } from '@/types/WorkOrder';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput } from 'flowbite-react';
+import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput, Toast, ToastToggle } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import StatCard from '@/components/StatCard';
@@ -9,7 +9,7 @@ import WorkOrderDetailModal from '@/components/WorkOrderDetailModal';
 import WorkOrderFormModal from '@/components/WorkOrderFormModal';
 import AppLayout from '@/layouts/AppLayout';
 import { debounce } from 'lodash';
-import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, ListFilter, Plus, Search } from 'lucide-react';
+import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, Check, ListFilter, Plus, Search, X } from 'lucide-react';
 
 interface Stats {
     queueCount: number;
@@ -36,11 +36,11 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [formModalMode, setFormModalMode] = useState<'add' | 'edit'>('add');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
-
-    const [submittedData, setSubmittedData] = useState<Partial<WorkOrder> | null>(null);
-    const { errors } = usePage<{ errors: Record<string, string> }>().props;
+    const [submittedOrder, setSubmittedOrder] = useState<Partial<WorkOrder> | null>(null);
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const [search, setSearch] = useState(filters.search || '');
     const [sortColumn, setSortColumn] = useState(filters.column || 'order_deadline');
@@ -49,6 +49,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         if (!filters.status || filters.status === 'all') return [];
         return Array.isArray(filters.status) ? filters.status : [filters.status];
     });
+
+    const { errors, flash } = usePage<{ errors: Record<string, string>; flash: { success?: string; error?: string } }>().props;
 
     const sortOptions = [
         { value: 'order_deadline', label: 'Deadline' },
@@ -88,7 +90,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const handleCloseFormModal = () => {
         setIsFormModalOpen(false);
         setEditingOrder(null);
-        setSubmittedData(null);
+        setSubmittedOrder(null);
         router.get(
             window.location.pathname,
             {},
@@ -228,12 +230,12 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             router.post(route('work-orders.store'), snakeCaseConvertedData, {
                 preserveState: true,
                 onError: (errors) => {
-                    setSubmittedData(data);
+                    setSubmittedOrder(data);
                     setIsFormModalOpen(true);
                     console.log('Validation errors:', errors);
                 },
                 onSuccess: () => {
-                    setSubmittedData(null);
+                    setSubmittedOrder(null);
                     handleCloseFormModal();
                 },
             });
@@ -248,23 +250,26 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
             router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData, {
                 onError: (errors) => {
-                    setSubmittedData(data);
+                    setSubmittedOrder(data);
                     setIsFormModalOpen(true);
                     console.log('Validation errors:', errors);
                 },
                 onSuccess: () => {
-                    setSubmittedData(null);
+                    setSubmittedOrder(null);
                     handleCloseFormModal();
                 },
             });
         }
+    };
 
-        handleCloseFormModal();
+    const handleCloseToast = () => {
+        setShowToast(false);
+        router.reload({ only: ['flash'] });
     };
 
     const getInitialData = () => {
-        if (submittedData) {
-            return submittedData;
+        if (submittedOrder) {
+            return submittedOrder;
         }
         return editingOrder;
     };
@@ -279,7 +284,19 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         } else {
             setFilterStatus(Array.isArray(statusFilter) ? statusFilter : [statusFilter]);
         }
-    }, [filters]);
+        if (flash.success || flash.error) {
+            setShowToast(true);
+        }
+    }, [filters, flash]);
+
+    useEffect(() => {
+        if (showToast && (flash.success || flash.error)) {
+            const timer = setTimeout(() => {
+                setShowToast(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    })
 
     return (
         <>
@@ -418,6 +435,25 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 errors={errors}
             />
             <WorkOrderDetailModal show={isDetailModalOpen} workOrder={selectedOrder} onClose={handleCloseDetailModal} onEdit={handleOpenEditModal} />
+            {showToast && flash.success && (
+                <Toast className="fixed top-16 left-1/2 z-50 -translate-x-1/2">
+                    <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+                        <Check className="h-5 w-5" />
+                    </div>
+                    <div className="ml-3 text-sm font-normal">{flash.success}</div>
+                    <ToastToggle onDismiss={handleCloseToast} />
+                </Toast>
+            )}
+
+            {showToast && flash.error && (
+                <Toast className="fixed top-4 right-4 z-50">
+                    <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
+                        <X className="h-5 w-5" />
+                    </div>
+                    <div className="ml-3 text-sm font-normal">{flash.error}</div>
+                    <ToastToggle onDismiss={handleCloseToast} />
+                </Toast>
+            )}
         </>
     );
 };
