@@ -15,7 +15,7 @@ class StoreWorkOrderRequest extends FormRequest
     {
         return [
             'customer_name' => 'required|string|min:2|max:255',
-            'whatsapp_number' => 'required|string|regex:/^[+]?[0-9\s\-\(\)]{8,20}$/',
+            'whatsapp_number' => 'required|string|regex:/^[0-9]{8,20}$/',
             'order_title' => 'required|string|min:2|max:255',
             'order_description' => 'nullable|string|min:2',
             'printing_size' => 'required|max:10',
@@ -53,8 +53,6 @@ class StoreWorkOrderRequest extends FormRequest
             'order_description' => 'deskripsi pesanan',
             'printing_size' => 'ukuran cetak',
             'printing_material' => 'bahan cetak',
-            'order_status' => 'status pesanan',
-            'order_cost' => 'biaya pesanan',
             'order_deadline' => 'deadline pekerjaan',
         ];
     }

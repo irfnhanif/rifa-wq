@@ -16,7 +16,7 @@ class UpdateWorkOrderRequest extends FormRequest
     {
         return [
             'customer_name' => 'required|string|min:2|max:255',
-            'whatsapp_number' => 'required|digits_between:8,20',
+            'whatsapp_number' => 'required|string|regex:/^[0-9]{8,20}$/',
             'order_title' => 'required|string|min:2|max:255',
             'order_description' => 'nullable|string|min:2',
             'printing_size' => 'required|max:10',

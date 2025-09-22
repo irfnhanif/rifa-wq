@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class WorkOrderController extends Controller
 {
@@ -95,7 +96,7 @@ class WorkOrderController extends Controller
     public function store(StoreWorkOrderRequest $request)
     {
         try {
-            $validated = $request->validate();
+            $validated = $request->validated();
 
             $validated['user_id'] = $request->user()->id;
 
@@ -115,22 +116,20 @@ class WorkOrderController extends Controller
 
         return response()->json($workOrder);
     }
-
+    
     public function update(UpdateWorkOrderRequest $request, string $id)
     {
         try {
             $workOrder = WorkOrder::findOrFail($id);
 
-            $validated = $request->validate();
+            $validated = $request->validated();
 
             $workOrder->update($validated);
 
-            // cspell:disable-next-line
             return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil diperbarui", $validated['order_title']));
         } catch (ValidationException $e) {
             throw $e;
         }
-
     }
 
     public function destroy(string $id)
