@@ -18,6 +18,7 @@ Route::get('/work-orders', [WorkOrderController::class, 'index'])->name('work-or
 Route::get('/work-orders/{id}', [WorkOrderController::class, 'show'])->name('work-orders.show');
 Route::post('/work-orders', [WorkOrderController::class, 'store'])->name('work-orders.store');
 Route::put('/work-orders/{id}', [WorkOrderController::class, 'update'])->name('work-orders.update');
+Route::patch('/work-orders/{id}', [WorkOrderController::class, 'markAsDone'])->name('work-orders.markAsDone');
 Route::delete('/work-orders/{id}', [WorkOrderController::class, 'destroy'])->name('work-orders.destroy');
 
 require __DIR__ . '/settings.php';

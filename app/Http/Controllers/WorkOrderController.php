@@ -116,7 +116,7 @@ class WorkOrderController extends Controller
 
         return response()->json($workOrder);
     }
-    
+
     public function update(UpdateWorkOrderRequest $request, string $id)
     {
         try {
@@ -132,13 +132,56 @@ class WorkOrderController extends Controller
         }
     }
 
+    public function markAsDone(Request $request, string $id)
+    {
+        try {
+            $workOrder = WorkOrder::findOrFail($id);
+
+            $validated = $request->validate(
+                [
+                    'order_cost' => 'nullable|integer|min:0'
+                ]
+            );
+
+            $statusMessage = '';
+            switch ($workOrder['order_status']) {
+                case 'PENDING':
+                    $workOrder->update(['order_status' => 'IN_PROCESS']);
+                    $statusMessage = 'dimulai';
+                    break;
+                case 'IN_PROCESS':
+                    $workOrder->update([
+                        'order_status' => 'FINISHED',
+                        'order_cost' => $validated['order_cost']
+                    ]);
+                    $statusMessage = 'diselesaikan';
+                    break;
+                case 'FINISHED':
+                    $workOrder->update(['order_status' => 'PICKED_UP']);
+                    $statusMessage = 'diambil';
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Invalid order status transition');
+            }
+
+            return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil %s", $workOrder['order_title'], $statusMessage));
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return redirect()->route('work-orders.index')->with('error', 'Terjadi kesalahan saat memperbarui pekerjaan');
+        }
+    }
+
     public function destroy(string $id)
     {
-        $workOrder = WorkOrder::findOrFail($id);
+        try {
+            $workOrder = WorkOrder::findOrFail($id);
 
-        $workOrder->delete();
+            $workOrder->delete();
 
-        // cspell:disable-next-line
-        return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil dihapus", $workOrder['order_title']));
+            return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil dihapus", $workOrder['order_title']));
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return redirect()->route('work-orders.index')->with('error', 'Terjadi kesalahan saat memperbarui pekerjaan');
+        }
     }
 }
