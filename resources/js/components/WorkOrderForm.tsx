@@ -60,6 +60,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     onChange={handleChange}
                     placeholder=""
                     color={errors.order_cost ? 'failure' : undefined}
+                    addon="Rp"
                     required
                 />
                 <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_cost}</HelperText>
@@ -132,7 +133,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                 />
                 <HelperText className="mb-2 text-xs font-light text-red-800">{errors.customer_name}</HelperText>
             </div>
-            
+
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="whatsappNumber">

@@ -4,6 +4,7 @@ import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownIt
 import React, { useCallback, useEffect, useState } from 'react';
 
 import ConfirmationModal from '@/components/ConfirmationModal';
+import MarkAsDoneModal from '@/components/MarkAsDoneModal';
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
 import WorkOrderDetailModal from '@/components/WorkOrderDetailModal';
@@ -38,6 +39,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isMarkAsDoneModalOpen, setIsMarkAsDoneModalOpen] = useState(false);
 
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
@@ -95,6 +97,11 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         setIsConfirmModalOpen(true);
     };
 
+    const handleOpenMarkAsDoneModal = (order: WorkOrder) => {
+        setEditingOrder(order);
+        setIsMarkAsDoneModalOpen(true);
+    };
+
     const handleCloseFormModal = () => {
         setIsFormModalOpen(false);
         setEditingOrder(null);
@@ -114,6 +121,11 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const handleCloseDetailModal = () => {
         setIsDetailModalOpen(false);
         setSelectedOrder(null);
+    };
+
+    const handleCloseMarkAsDoneModal = () => {
+        setIsMarkAsDoneModalOpen(false);
+        setEditingOrder(null);
     };
 
     const getCurrentSortLabel = () => {
@@ -236,7 +248,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
         if (formModalMode === 'add') {
             router.post(route('work-orders.store'), snakeCaseConvertedData, {
-                preserveState: true,
+                // preserveState: true,
                 onError: (errors) => {
                     setSubmittedOrder(data);
                     setIsFormModalOpen(true);
@@ -280,6 +292,38 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 },
             });
         }
+    };
+
+    const handleMarkAsDoneClick = (workOrder: WorkOrder) => {
+        if (workOrder.orderStatus === 'IN_PROCESS') {
+            return handleOpenMarkAsDoneModal(workOrder);
+        }
+
+        setSelectedOrder(workOrder);
+
+        router.patch(
+            route('work-orders.markAsDone', workOrder.id),
+            {},
+            {
+                onSuccess: () => {
+                    setSelectedOrder(null);
+                },
+            },
+        );
+    };
+
+    const handleMarkAsDoneSubmit = (price: number) => {
+        const snakeCaseConvertedData: Record<string, any> = {
+            order_cost: price,
+        };
+
+        router.patch(route('work-orders.markAsDone', editingOrder?.id), snakeCaseConvertedData, {
+            onError: () => {},
+            onSuccess: () => {
+                handleCloseMarkAsDoneModal();
+                setEditingOrder(null);
+            },
+        });
     };
 
     const handleCloseToast = () => {
@@ -410,7 +454,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 <DropdownItem onClick={toggleSortDirection}>
                                     <div className="flex items-center gap-2">
                                         {getSortIcon()}
-                                        {/* cspell:disable-next-line */}
                                         <span>Arah Urutan: {sortDirection === 'asc' ? 'A-Z → Z-A' : 'Z-A → A-Z'}</span>
                                     </div>
                                 </DropdownItem>
@@ -428,7 +471,13 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                     <div className="flex flex-col gap-4">
                         {workOrders.data.map((order) => (
-                            <WorkOrderCard key={order.id} order={order} onEdit={handleOpenEditModal} onClick={handleOpenDetailModal} />
+                            <WorkOrderCard
+                                key={order.id}
+                                order={order}
+                                onEdit={handleOpenEditModal}
+                                onClick={handleOpenDetailModal}
+                                onMarkAsDone={handleMarkAsDoneClick}
+                            />
                         ))}
                     </div>
 
@@ -469,6 +518,13 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 Apakah Anda yakin ingin menghapus pekerjaan untuk pelanggan
                 <span className="font-bold"> {selectedOrder?.orderTitle}</span>? Tindakan ini tidak dapat dibatalkan.
             </ConfirmationModal>
+
+            <MarkAsDoneModal
+                show={isMarkAsDoneModalOpen}
+                order={editingOrder}
+                onClose={() => setIsMarkAsDoneModalOpen(false)}
+                onSubmit={handleMarkAsDoneSubmit}
+            />
 
             {showToast && flash.success && (
                 <Toast className="fixed top-16 left-1/2 z-50 -translate-x-1/2">

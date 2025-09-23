@@ -9,6 +9,7 @@ interface WorkOrderCardProps {
     order: WorkOrder;
     onEdit: (workOrder: WorkOrder) => void;
     onClick: (workOrder: WorkOrder) => void;
+    onMarkAsDone: (workOrder: WorkOrder) => void;
 }
 
 const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
@@ -18,25 +19,22 @@ const statusStyles: Record<Status, { iconColor: string; Icon: LucideIcon }> = {
     PICKED_UP: { iconColor: 'text-[#1447E6]', Icon: Truck },
 };
 
-const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit, onClick }) => {
+const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit, onClick, onMarkAsDone }) => {
     const { id, customerName, orderTitle, orderDeadline, orderStatus } = workOrder;
     const styles = statusStyles[orderStatus as Status] ?? statusStyles.PENDING;
 
-    const handleMarkComplete = (id: string, status: Status) => () => {};
-
     const formattedOrderDeadline = new Date(orderDeadline).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-    const renderActionButton = (id: string, orderStatus: Status) => {
+    const renderActionButton = (orderStatus: Status) => {
         const handleButtonClick = (e: React.MouseEvent) => {
             e.stopPropagation();
-            handleMarkComplete(id, orderStatus)();
+            onMarkAsDone(workOrder);
         };
 
         if (orderStatus === 'PENDING') {
             return (
                 <Button className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300" onClick={handleButtonClick}>
                     <Hourglass className="mr-2 h-4 w-4" />
-                    {/* cspell:disable-next-line */}
                     Mulai Proses
                 </Button>
             );
@@ -44,7 +42,6 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
             return (
                 <Button className="bg-[#047857] text-[#FFFFFF] hover:bg-green-800 focus:ring-4 focus:ring-green-300" onClick={handleButtonClick}>
                     <Check className="mr-2 h-4 w-4" />
-                    {/* cspell:disable-next-line */}
                     Tandai Selesai
                 </Button>
             );
@@ -52,7 +49,6 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
             return (
                 <Button className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300" onClick={handleButtonClick}>
                     <Truck className="mr-2 h-4 w-4" />
-                    {/* cspell:disable-next-line */}
                     Tandai Diambil
                 </Button>
             );
@@ -92,7 +88,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                <div className="w-[160px]">{renderActionButton(id, orderStatus)}</div>
+                <div className="w-[180px]">{renderActionButton(orderStatus)}</div>
             </div>
         </div>
     );
