@@ -3,6 +3,7 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput, Toast, ToastToggle } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
+import ConfirmationModal from '@/components/ConfirmationModal';
 import StatCard from '@/components/StatCard';
 import WorkOrderCard from '@/components/WorkOrderCard';
 import WorkOrderDetailModal from '@/components/WorkOrderDetailModal';
@@ -36,6 +37,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const [formModalMode, setFormModalMode] = useState<'add' | 'edit'>('add');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const [editingOrder, setEditingOrder] = useState<Partial<WorkOrder> | null>(null);
     const [selectedOrder, setSelectedOrder] = useState<WorkOrder | null>(null);
@@ -85,6 +87,12 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         handleCloseFormModal();
         setSelectedOrder(order);
         setIsDetailModalOpen(true);
+    };
+
+    const handleOpenConfirmModal = (order: WorkOrder) => {
+        setSelectedOrder(order);
+        setIsDetailModalOpen(false);
+        setIsConfirmModalOpen(true);
     };
 
     const handleCloseFormModal = () => {
@@ -262,6 +270,18 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         }
     };
 
+    const handleConfirmDelete = () => {
+        if (selectedOrder) {
+            console.log('Deleting order:', selectedOrder);
+            router.delete(route('work-orders.destroy', selectedOrder?.id), {
+                onSuccess: () => {
+                    setSelectedOrder(null);
+                    setIsConfirmModalOpen(false);
+                },
+            });
+        }
+    };
+
     const handleCloseToast = () => {
         setShowToast(false);
         router.reload({ only: ['flash'] });
@@ -296,7 +316,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             }, 3000);
             return () => clearTimeout(timer);
         }
-    })
+    });
 
     return (
         <>
@@ -325,13 +345,11 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 renderTrigger={() => (
                                     <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                         <ListFilter className="mr-2 h-4 w-4" />
-                                        {/* cspell:disable-next-line */}
                                         Filter Status Pekerjaan
                                     </Button>
                                 )}
                             >
                                 <DropdownHeader>
-                                    {/* cspell:disable-next-line */}
                                     <span className="block text-sm font-semibold">Filter Status:</span>
                                 </DropdownHeader>
 
@@ -363,7 +381,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 label={
                                     <div className="flex items-center gap-2">
                                         {getSortIcon()}
-                                        {/* cspell:disable-next-line */}
                                         {getCurrentSortLabel()}
                                         <span className="text-xs text-gray-500">({sortDirection === 'asc' ? 'A-Z' : 'Z-A'})</span>
                                     </div>
@@ -372,7 +389,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 size="sm"
                             >
                                 <DropdownHeader>
-                                    {/* cspell:disable-next-line */}
                                     <span className="block text-sm font-semibold">Berdasarkan:</span>
                                 </DropdownHeader>
 
@@ -434,7 +450,26 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 initialData={getInitialData()}
                 errors={errors}
             />
-            <WorkOrderDetailModal show={isDetailModalOpen} workOrder={selectedOrder} onClose={handleCloseDetailModal} onEdit={handleOpenEditModal} />
+
+            <WorkOrderDetailModal
+                show={isDetailModalOpen}
+                workOrder={selectedOrder}
+                onClose={handleCloseDetailModal}
+                onEdit={handleOpenEditModal}
+                onDelete={handleOpenConfirmModal}
+            />
+
+            <ConfirmationModal
+                show={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Konfirmasi Hapus Pekerjaan"
+                confirmText="Hapus"
+            >
+                Apakah Anda yakin ingin menghapus pekerjaan untuk pelanggan
+                <span className="font-bold"> {selectedOrder?.orderTitle}</span>? Tindakan ini tidak dapat dibatalkan.
+            </ConfirmationModal>
+
             {showToast && flash.success && (
                 <Toast className="fixed top-16 left-1/2 z-50 -translate-x-1/2">
                     <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">

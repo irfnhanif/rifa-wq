@@ -1,6 +1,6 @@
 // resources/js/components/WorkOrderDetailModal.tsx
 import { Badge, Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
-import { Activity, CalendarDays, FileText, Layers, LucideIcon, NotepadText, Phone, Ruler, SquarePen, User, Wallet } from 'lucide-react';
+import { Activity, CalendarDays, FileText, Layers, LucideIcon, NotepadText, Phone, Ruler, SquarePen, Trash2, User, Wallet } from 'lucide-react';
 import React from 'react';
 import { WorkOrder } from '../types/WorkOrder';
 
@@ -27,10 +27,10 @@ interface WorkOrderDetailModalProps {
     workOrder: WorkOrder | null;
     onClose: () => void;
     onEdit: (workOrder: WorkOrder) => void;
-    // onDelete: (workOrder: WorkOrder) => void;
+    onDelete: (workOrder: WorkOrder) => void;
 }
 
-const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit }) => {
+const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workOrder, onClose, onEdit, onDelete }) => {
     if (!workOrder) return null;
 
     const statusLabelOptions = new Map([
@@ -96,10 +96,10 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                     <SquarePen className="mr-2 h-4 w-4" />
                     Edit
                 </Button>
-                {/* <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
+                <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
                     <Trash2 className="mr-2 h-4 w-4" />
                     Hapus
-                </Button> */}
+                </Button>
             </ModalFooter>
         </Modal>
     );
