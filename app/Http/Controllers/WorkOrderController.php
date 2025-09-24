@@ -6,7 +6,6 @@ use App\Http\Requests\StoreWorkOrderRequest;
 use App\Http\Requests\UpdateWorkOrderRequest;
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
@@ -102,7 +101,6 @@ class WorkOrderController extends Controller
 
             $workOrder = WorkOrder::create($validated);
 
-            // cspell:disable-next-line
             return redirect()->route('work-orders.index')->with('success', sprintf("Pekerjaan %s berhasil ditambahkan", $workOrder['order_title']));
         } catch (ValidationException $e) {
             throw $e;
