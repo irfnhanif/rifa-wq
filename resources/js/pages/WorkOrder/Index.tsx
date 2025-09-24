@@ -486,6 +486,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             currentPage={workOrders.current_page}
                             totalPages={workOrders.last_page}
                             onPageChange={handlePageChange}
+                            previousLabel='Sebelumnya'
+                            nextLabel='Selanjutnya'
                             showIcons
                         />
                     </div>
