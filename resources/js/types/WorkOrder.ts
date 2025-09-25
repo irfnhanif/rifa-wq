@@ -9,7 +9,7 @@ export interface WorkOrder {
     orderDescription: string | null;
     printingSize: string;
     printingMaterial: string;
-    orderDeadline: Date;
+    orderDeadline: string | Date;
     orderCost: number | null;
     orderStatus: Status;
     createdAt: string;

@@ -24,6 +24,10 @@ class WorkOrder extends Model
         'order_cost'
     ];
 
+    protected $casts = [
+        'order_deadline' => 'date',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
