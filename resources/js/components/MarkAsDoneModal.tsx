@@ -1,5 +1,5 @@
 import { Button, Label, Modal, ModalBody, ModalFooter, ModalHeader, TextInput } from 'flowbite-react';
-import { CheckCircle, Wallet } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { WorkOrder } from '../types/WorkOrder';
 
@@ -13,12 +13,28 @@ interface MarkAsDoneModalProps {
 }
 
 const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubmit, order }) => {
-    const [price, setPrice] = useState<number | string>('');
+    const [displayPrice, setDisplayPrice] = useState('');
+    const [numericPrice, setNumericPrice] = useState(0);
+
+    const formatIDR = (value: number): string => {
+        if (value === 0) return '';
+        return value.toLocaleString('id-ID');
+    };
+
+    const handlePriceInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const input = e.target.value;
+
+        const digitsOnly = input.replace(/[^\d]/g, '');
+        const numPrice = parseInt(digitsOnly) || 0;
+
+        setNumericPrice(numPrice);
+        setDisplayPrice(formatIDR(numPrice));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (typeof price === 'number' && price > 0) {
-            onSubmit(price);
+        if (typeof numericPrice === 'number' && numericPrice > 0) {
+            onSubmit(numericPrice);
         }
     };
 
@@ -28,7 +44,7 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
             <ModalBody>
                 <form id="mark-as-done-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <p className="text-base text-[#4A5565]">
-                        Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik{' '}
+                        Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik
                         <span className="font-semibold">{order?.customerName}</span>.
                     </p>
                     <div>
@@ -40,9 +56,9 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
                         <TextInput
                             id="orderCost"
                             name="orderCost"
-                            type="number"
-                            value={price}
-                            onChange={(e) => setPrice(Number(e.target.value))}
+                            type="text"
+                            value={displayPrice}
+                            onChange={handlePriceInput}
                             placeholder="0"
                             required
                             addon="Rp"

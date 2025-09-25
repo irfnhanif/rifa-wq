@@ -56,7 +56,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     id="orderCost"
                     name="orderCost"
                     disabled={orderStatus !== 'FINISHED' && orderStatus !== 'PICKED_UP'}
-                    value={orderCost?.toString()}
+                    value={orderCost?.toString() || ''}
                     onChange={handleChange}
                     placeholder=""
                     color={errors.order_cost ? 'failure' : undefined}
@@ -84,9 +84,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
         printingSize: '',
         printingMaterial: '',
         orderStatus: 'PENDING',
-        orderCost: null,
-        orderDeadline: new Date(),
-        orderDescription: '',
+        orderCost: 0,
+        orderDeadline: new Date().toISOString().split('T')[0],
+        orderDescription: '', // ✅ Always string
     });
 
     useEffect(() => {
@@ -104,7 +104,13 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
         if (!date) {
             return;
         }
-        setFormData((prev) => ({ ...prev, orderDeadline: date }));
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateString = `${year}-${month}-${day}`;
+
+        setFormData((prev) => ({ ...prev, orderDeadline: dateString }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -229,6 +235,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     name="orderDeadline"
                     onChange={handleDateChange}
                     icon={CalendarDays}
+                    value={new Date(formData.orderDeadline || new Date())}
                     language="id-ID"
                     labelTodayButton="Hari Ini"
                     labelClearButton="Bersihkan"
@@ -246,6 +253,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                 <Textarea
                     id="orderDescription"
                     name="orderDescription"
+                    value={formData.orderDescription || ''}
                     onChange={handleChange}
                     placeholder="Tulis deskripsi tambahan disini..."
                     rows={4}

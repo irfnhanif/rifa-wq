@@ -87,7 +87,11 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                     </div>
 
                     <div>
-                        <DetailItem icon={Wallet} label="Biaya Pekerjaan" value={workOrder.orderCost || '-'} />
+                        <DetailItem
+                            icon={Wallet}
+                            label="Biaya Pekerjaan"
+                            value={workOrder.orderCost ? `Rp${workOrder.orderCost.toLocaleString('id-ID')}` : '-'}
+                        />
                     </div>
                 </div>
             </ModalBody>
