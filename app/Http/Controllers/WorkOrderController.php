@@ -73,8 +73,8 @@ class WorkOrderController extends Controller
             ];
         });
 
-        $queueCount = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->count();
-        $dailyRevenue = WorkOrder::where('order_status', 'FINISHED')->whereDate('updated_at', now())->sum('order_cost');
+        $queueCount = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->count();
+        $dailyRevenue = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->sum('order_cost');
         $formattedDailyRevenue = 'Rp' . number_format($dailyRevenue, 0, ',', '.');
 
         return Inertia::render('WorkOrder/Index', [
@@ -121,6 +121,10 @@ class WorkOrderController extends Controller
             $workOrder = WorkOrder::findOrFail($id);
 
             $validated = $request->validated();
+
+            if (!in_array($validated['order_status'], ['FINISHED', 'PICKED_UP']) && $workOrder['order_cost'] !== null) {
+                $validated['order_cost'] = null;
+            }
 
             $workOrder->update($validated);
 
