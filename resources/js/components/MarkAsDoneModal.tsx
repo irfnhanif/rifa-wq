@@ -35,6 +35,8 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
         e.preventDefault();
         if (typeof numericPrice === 'number' && numericPrice > 0) {
             onSubmit(numericPrice);
+            setNumericPrice(0);
+            setDisplayPrice('');
         }
     };
 

@@ -33,7 +33,9 @@ class WorkOrderController extends Controller
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
-        $query = WorkOrder::query()->with('user:id,name');
+        $query = WorkOrder::query()
+            ->with('user:id,name')
+            ->where('user_id', $request->user()->id);
 
         if ($search !== '') {
             $term = addcslashes($search, '\%_');
