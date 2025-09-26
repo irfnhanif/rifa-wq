@@ -10,6 +10,13 @@ class Notification extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'user_id',
+        'work_order_id',
+        'message',
+        'read_status'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
