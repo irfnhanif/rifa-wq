@@ -1,5 +1,5 @@
 import { Notification } from '@/types/Notification';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Avatar, Button, Dropdown, DropdownHeader, DropdownItem, Navbar, NavbarBrand, Popover } from 'flowbite-react';
 import { Bell, LogOut } from 'lucide-react';
 import React, { useState } from 'react';
@@ -19,12 +19,33 @@ interface SharedProps {
 
 const AppNavbar: React.FC = () => {
     const { auth, notifications } = usePage<SharedProps>().props;
-
     const [localNotifications, setLocalNotifications] = useState(notifications);
     const unreadCount = localNotifications.filter((n) => !n.readStatus).length;
 
     const handleMarkAllAsRead = () => {
-        setLocalNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+        setLocalNotifications((prev) => prev.map((n) => ({ ...n, readStatus: true })));
+
+        router.patch(
+            route('notifications.markAllAsRead'),
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
+    };
+
+    const handleMarkOneAsRead = (notificationId: string) => {
+        setLocalNotifications((prev) => prev.map((n) => (n.id === notificationId ? { ...n, readStatus: true } : n)));
+
+        router.patch(
+            route('notifications.markAsRead', notificationId),
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     const getInitials = (name: string) => {
@@ -49,18 +70,24 @@ const AppNavbar: React.FC = () => {
             <div className="flex items-center gap-4 md:order-2">
                 <Popover
                     aria-labelledby="notifications-popover"
-                    content={<NotificationPopover notifications={localNotifications} onMarkAllAsRead={handleMarkAllAsRead} />}
+                    content={
+                        <NotificationPopover
+                            notifications={localNotifications}
+                            onMarkAllAsRead={handleMarkAllAsRead}
+                            onMarkOneAsRead={handleMarkOneAsRead}
+                        />
+                    }
                 >
                     <Button color="gray" className="relative rounded-none border-0 bg-transparent p-2 enabled:hover:bg-gray-100">
                         <Bell className="h-6 w-6 text-[#4A5565]" />
                         {unreadCount > 0 && (
                             <div className="absolute -top-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-                                {unreadCount}
+                                {unreadCount > 99 ? '99+' : unreadCount}
                             </div>
                         )}
                     </Button>
                 </Popover>
-                
+
                 {auth.user && (
                     <Dropdown
                         arrowIcon={false}
@@ -68,7 +95,7 @@ const AppNavbar: React.FC = () => {
                         label={<Avatar alt="User settings" placeholderInitials={getInitials(auth.user.name)} rounded />}
                     >
                         <DropdownHeader>
-                            <span className="block text-sm">{auth.user.name}</span>
+                            <span className="block text-base mb-0.5">{auth.user.name}</span>
                             <span className="block truncate text-sm font-medium">{auth.user.email}</span>
                         </DropdownHeader>
                         <DropdownItem icon={LogOut}>Keluar</DropdownItem>
