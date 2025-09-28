@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('work_order_id')->constrained('work_orders')->onDelete('cascade');
-            $table->text('message');
+            $table->string('message');
             $table->boolean('read_status');
             $table->timestamps();
         });
