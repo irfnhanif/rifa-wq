@@ -23,7 +23,7 @@ class UpdateWorkOrderRequest extends FormRequest
             'printing_material' => 'required|string|min:2|max:255',
             'order_status' => ['required', Rule::in(['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP'])],
             'order_cost' => 'nullable|integer|min:0',
-            'order_deadline' => 'required|date|after:today',
+            'order_deadline' => 'required|date|after_or_equal:today',
         ];
     }
 
@@ -47,7 +47,7 @@ class UpdateWorkOrderRequest extends FormRequest
             'order_cost.min' => 'Biaya tidak boleh negatif.',
             'order_deadline.required' => 'Deadline pekerjaan harus diisi.',
             'order_deadline.date' => 'Deadline pekerjaan harus berupa tanggal yang valid.',
-            'order_deadline.after' => 'Deadline pekerjaan harus setelah hari ini.',
+            'order_deadline.after_or_equal' => 'Deadline harus diatur hari ini atau selanjutnya.',
         ];
     }
 

@@ -20,7 +20,7 @@ class StoreWorkOrderRequest extends FormRequest
             'order_description' => 'nullable|string|min:2',
             'printing_size' => 'required|max:10',
             'printing_material' => 'required|string|min:2|max:255',
-            'order_deadline' => 'required|date|after:today',
+            'order_deadline' => 'required|date|after_or_equal:today',
         ];
     }
 
@@ -40,7 +40,7 @@ class StoreWorkOrderRequest extends FormRequest
             'printing_material.min' => 'Bahan cetak minimal 2 karakter.',
             'order_deadline.required' => 'Deadline pekerjaan harus diisi.',
             'order_deadline.date' => 'Deadline pekerjaan harus berupa tanggal yang valid.',
-            'order_deadline.after' => 'Deadline pekerjaan harus setelah hari ini.',
+            'order_deadline.after_or_equal' => 'Deadline harus diatur hari ini atau selanjutnya.',
         ];
     }
 
