@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Notification;
-use App\Models\WorkOrder;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NotificationService
