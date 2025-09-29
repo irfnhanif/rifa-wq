@@ -95,10 +95,12 @@ const AppNavbar: React.FC = () => {
                         label={<Avatar alt="User settings" placeholderInitials={getInitials(auth.user.name)} rounded />}
                     >
                         <DropdownHeader>
-                            <span className="block text-base mb-0.5">{auth.user.name}</span>
+                            <span className="mb-0.5 block text-base">{auth.user.name}</span>
                             <span className="block truncate text-sm font-medium">{auth.user.email}</span>
                         </DropdownHeader>
-                        <DropdownItem icon={LogOut}>Keluar</DropdownItem>
+                        <DropdownItem icon={LogOut} onClick={() => router.post(route('logout'))}>
+                            Keluar
+                        </DropdownItem>
                     </Dropdown>
                 )}
             </div>

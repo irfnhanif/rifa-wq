@@ -22,7 +22,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
             >
                 {({ processing, errors }) => (
                     <div className="grid gap-6">
-                        <div className="grid gap-2">
+                        <div className="grid gap-0.5">
                             <Label htmlFor="email">Email</Label>
                             <TextInput
                                 id="email"
@@ -37,7 +37,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
                         </div>
 
-                        <div className="grid gap-2">
+                        <div className="grid gap-0.5">
                             <Label htmlFor="password">Password</Label>
                             <TextInput
                                 id="password"
@@ -52,8 +52,8 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                             <HelperText className="text-xs font-light text-red-800">{errors.password}</HelperText>
                         </div>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">Confirm password</Label>
+                        <div className="grid gap-0.5">
+                            <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
                             <TextInput
                                 id="password_confirmation"
                                 type="password"

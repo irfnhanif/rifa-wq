@@ -21,11 +21,11 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     <>
                         <Button disabled={processing} color="gray" outline>
                             {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Resend verification email
+                            Kirim ulang email verifikasi
                         </Button>
 
                         <Link href={route('logout')} method="post" className="mx-auto block text-sm">
-                            Log out
+                            Keluar
                         </Link>
                     </>
                 )}
