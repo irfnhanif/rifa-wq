@@ -79,7 +79,7 @@ class WorkOrderController extends Controller
         $dailyRevenue = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->sum('order_cost');
         $formattedDailyRevenue = 'Rp' . number_format($dailyRevenue, 0, ',', '.');
 
-        return Inertia::render('WorkOrder/Index', [
+        return Inertia::render('work-order/index', [
             'stats' => [
                 'queueCount' => $queueCount,
                 'dailyRevenue' => $formattedDailyRevenue
@@ -107,14 +107,6 @@ class WorkOrderController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         }
-    }
-
-    // This method is always called by AJAX request (API)
-    public function show(string $id)
-    {
-        $workOrder = WorkOrder::findOrFail($id);
-
-        return response()->json($workOrder);
     }
 
     public function update(UpdateWorkOrderRequest $request, string $id)
