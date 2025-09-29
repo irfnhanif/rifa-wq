@@ -1,4 +1,3 @@
-// resources/js/Components/StatCard.tsx
 import { Card } from 'flowbite-react';
 import React from 'react';
 

@@ -1,11 +1,6 @@
-import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { Form, Head } from '@inertiajs/react';
+import { Button, Checkbox, HelperText, Label, TextInput } from 'flowbite-react';
 import { LoaderCircle } from 'lucide-react';
 
 interface LoginProps {
@@ -15,16 +10,17 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title="Masuk RIFA-WQ" description="Masukkan email dan kata sandi di bawah ini untuk masuk">
             <Head title="Log in" />
-
             <Form method="post" action={route('login')} resetOnSuccess={['password']} className="flex flex-col gap-6">
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
+                            <div>
+                                <Label htmlFor="email" className="mb-1">
+                                    Email
+                                </Label>
+                                <TextInput
                                     id="email"
                                     type="email"
                                     name="email"
@@ -33,20 +29,21 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     tabIndex={1}
                                     autoComplete="email"
                                     placeholder="email@example.com"
+                                    color={errors.email ? 'failure' : undefined}
                                 />
-                                <InputError message={errors.email} />
+                                <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
                             </div>
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
+                            <div>
+                                <div className="mb-1 flex justify-between">
                                     <Label htmlFor="password">Password</Label>
                                     {canResetPassword && (
-                                        <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
-                                            Forgot password?
-                                        </TextLink>
+                                        <a href={route('password.request')} className="ml-auto text-sm text-blue-600 hover:underline" tabIndex={5}>
+                                            Lupa password?
+                                        </a>
                                     )}
                                 </div>
-                                <Input
+                                <TextInput
                                     id="password"
                                     type="password"
                                     name="password"
@@ -54,26 +51,27 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     tabIndex={2}
                                     autoComplete="current-password"
                                     placeholder="Password"
+                                    color={errors.password ? 'failure' : undefined}
                                 />
-                                <InputError message={errors.password} />
+                                <HelperText className="text-xs font-light text-red-800">{errors.password}</HelperText>
                             </div>
 
                             <div className="flex items-center space-x-3">
                                 <Checkbox id="remember" name="remember" tabIndex={3} />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">Ingat saya</Label>
                             </div>
 
                             <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
                                 {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Log in
+                                Masuk
                             </Button>
-                        </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={route('register')} tabIndex={5}>
-                                Sign up
-                            </TextLink>
+                            <div className="text-center text-sm text-gray-600">
+                                Tidak punya akun?{' '}
+                                <a href={route('register')} className="text-blue-600 hover:underline" tabIndex={5}>
+                                    Daftar
+                                </a>
+                            </div>
                         </div>
                     </>
                 )}

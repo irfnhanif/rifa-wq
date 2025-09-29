@@ -1,4 +1,3 @@
-// resources/js/components/WorkOrderForm.tsx
 import { WorkOrder } from '@/types/WorkOrder';
 import { Datepicker, HelperText, Label, TextInput, Textarea } from 'flowbite-react';
 import { CalendarDays, Phone, Ruler, User } from 'lucide-react';
