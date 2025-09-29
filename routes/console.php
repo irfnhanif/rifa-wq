@@ -12,3 +12,5 @@ Artisan::command('inspire', function () {
 
 Schedule::job(new GenerateNotifications)->dailyAt('06.00');
 Schedule::job(new DeleteNotifications)->dailyAt('05.55');
+
+Schedule::job(new GenerateNotifications)->everyMinute();

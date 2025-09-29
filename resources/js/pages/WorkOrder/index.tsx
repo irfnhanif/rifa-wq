@@ -3,13 +3,13 @@ import { Head, router, usePage } from '@inertiajs/react';
 import { Button, Checkbox, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Pagination, TextInput, Toast, ToastToggle } from 'flowbite-react';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import ConfirmationModal from '@/components/ConfirmationModal';
-import MarkAsDoneModal from '@/components/MarkAsDoneModal';
-import StatCard from '@/components/StatCard';
-import WorkOrderCard from '@/components/WorkOrderCard';
-import WorkOrderDetailModal from '@/components/WorkOrderDetailModal';
-import WorkOrderFormModal from '@/components/WorkOrderFormModal';
-import AppLayout from '@/layouts/AppLayout';
+import ConfirmationModal from '@/components/confirmation-modal';
+import MarkAsDoneModal from '@/components/mark-as-done-modal';
+import StatCard from '@/components/stat-card';
+import WorkOrderCard from '@/components/work-order-card';
+import WorkOrderDetailModal from '@/components/work-order-detail-modal';
+import WorkOrderFormModal from '@/components/work-order-form-modal';
+import AppLayout from '@/layouts/app-layout';
 import { debounce } from 'lodash';
 import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, Check, ListFilter, Plus, Search, X } from 'lucide-react';
 

@@ -1,5 +1,5 @@
 // resources/js/Layouts/AppLayout.tsx
-import AppNavbar from '@/components/AppNavbar';
+import AppNavbar from '@/components/app-navbar';
 import React from 'react';
 
 type AppLayoutProps = {

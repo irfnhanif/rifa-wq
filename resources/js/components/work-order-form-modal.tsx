@@ -3,7 +3,7 @@ import { WorkOrder } from '@/types/WorkOrder';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
 import { Save } from 'lucide-react';
 import React from 'react';
-import WorkOrderForm from './WorkOrderForm';
+import WorkOrderForm from './work-order-form';
 
 interface WorkOrderFormModalProps {
     mode: 'add' | 'edit';

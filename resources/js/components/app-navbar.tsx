@@ -3,7 +3,7 @@ import { Link, router, usePage } from '@inertiajs/react';
 import { Avatar, Button, Dropdown, DropdownHeader, DropdownItem, Navbar, NavbarBrand, Popover } from 'flowbite-react';
 import { Bell, LogOut } from 'lucide-react';
 import React, { useState } from 'react';
-import NotificationPopover from './NotificationPopover';
+import NotificationPopover from './notification-popover';
 
 interface SharedProps {
     auth: {
