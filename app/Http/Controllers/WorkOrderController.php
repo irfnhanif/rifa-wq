@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWorkOrderRequest;
 use App\Http\Requests\UpdateWorkOrderRequest;
+use App\Models\User;
 use App\Models\WorkOrder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 
 class WorkOrderController extends Controller
 {
-
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
@@ -33,9 +33,18 @@ class WorkOrderController extends Controller
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 
-        $query = WorkOrder::query()
-            ->with('user:id,name')
-            ->where('user_id', $request->user()->id);
+        $query = WorkOrder::query();
+
+        if ($request->user()->role === 'ADMIN') {
+            $userId = $request->query('user');
+            $validatedUserId = is_string($userId) && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userId) ? $userId : '';
+
+            if (!empty($validatedUserId) && User::where('id', $validatedUserId)->exists()) {
+                $query->where('user_id', $validatedUserId);
+            }
+        } else {
+            $query->where('user_id', $request->user()->id);
+        }
 
         if ($search !== '') {
             $term = addcslashes($search, '\%_');
@@ -75,15 +84,18 @@ class WorkOrderController extends Controller
             ];
         });
 
-        $queueCount = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->count();
-        $dailyRevenue = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->sum('order_cost');
-        $formattedDailyRevenue = 'Rp' . number_format($dailyRevenue, 0, ',', '.');
+        $stats = $request->user()->role === 'ADMIN' ? [
+            'queueCount' => WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->count(),
+            'dailyRevenue' => WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->sum('order_cost'),
+        ] : [
+            'queueCount' => WorkOrder::where('user_id', $request->user()->id)->whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->count(),
+            'dailyRevenue' => WorkOrder::where('user_id', $request->user()->id)->whereIn('order_status', ['FINISHED', 'PICKED_UP'])->whereDate('updated_at', now())->sum('order_cost'),
+        ];
 
-        return Inertia::render('work-order/index', [
-            'stats' => [
-                'queueCount' => $queueCount,
-                'dailyRevenue' => $formattedDailyRevenue
-            ],
+        $stats['dailyRevenue'] = 'Rp' . number_format($stats['dailyRevenue'], 0, ',', '.');
+
+        $renderData = [
+            'stats' => $stats,
             'workOrders' => $workOrders,
             'filters' => [
                 'search' => $search,
@@ -91,7 +103,23 @@ class WorkOrderController extends Controller
                 'column' => $validatedColumn,
                 'direction' => $validatedDirection,
             ]
-        ]);
+        ];
+
+        if ($request->user()->role === 'ADMIN') {
+            $renderData['filters']['user'] = $request->query('user', '');
+            $renderData['users'] = User::select('id', 'name')
+                ->where('role', 'USER')
+                ->orderBy('name')
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                    ];
+                });
+        }
+
+        return Inertia::render('work-order/index', $renderData);
     }
 
     public function store(StoreWorkOrderRequest $request)
