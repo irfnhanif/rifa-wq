@@ -9,9 +9,10 @@ import StatCard from '@/components/stat-card';
 import WorkOrderCard from '@/components/work-order-card';
 import WorkOrderDetailModal from '@/components/work-order-detail-modal';
 import WorkOrderFormModal from '@/components/work-order-form-modal';
+import { useAuth } from '@/hooks/use-auth';
 import AppLayout from '@/layouts/app-layout';
 import { debounce } from 'lodash';
-import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, Check, ListFilter, Plus, Search, X } from 'lucide-react';
+import { ArrowDownUp, ArrowDownZA, ArrowUpAZ, Check, ListFilter, Plus, Search, Users, X } from 'lucide-react';
 
 interface Stats {
     queueCount: number;
@@ -23,6 +24,12 @@ interface PaginatedWorkOrders {
     last_page: number;
     data: WorkOrder[];
 }
+
+interface UserFilter {
+    id: string;
+    name: string;
+}
+
 interface WorkOrderIndexProps {
     stats: Stats;
     workOrders: PaginatedWorkOrders;
@@ -31,10 +38,12 @@ interface WorkOrderIndexProps {
         status: string;
         column: string;
         direction: string;
+        user?: string;
     };
+    users?: UserFilter[];
 }
 
-const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filters }) => {
+const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filters, users }) => {
     const [formModalMode, setFormModalMode] = useState<'add' | 'edit'>('add');
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -53,7 +62,15 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         if (!filters.status || filters.status === 'all') return [];
         return Array.isArray(filters.status) ? filters.status : [filters.status];
     });
+    const [selectedUser, setSelectedUser] = useState<UserFilter | null>(() => {
+        console.log(users);
+        if (filters.user && users) {
+            return users.find((user) => user.id === filters.user) || null;
+        }
+        return null;
+    });
 
+    const { isUser, isAdmin } = useAuth();
     const { errors, flash } = usePage<{ errors: Record<string, string>; flash: { success?: string; error?: string } }>().props;
 
     const sortOptions = [
@@ -144,6 +161,22 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         handleSortChange(sortColumn);
     };
 
+    const buildRouterParams = (overrides: Record<string, any> = {}) => {
+        const params: Record<string, any> = {
+            search: search,
+            column: sortColumn,
+            direction: sortDirection,
+            status: filterStatus.length === 0 ? '' : filterStatus,
+            ...overrides,
+        };
+
+        if (isAdmin && selectedUser?.id) {
+            params.user = selectedUser.id;
+        }
+
+        return params;
+    };
+
     const handleSortChange = (column: string) => {
         const newDirection = sortColumn === column && sortDirection === 'asc' ? 'desc' : 'asc';
         setSortColumn(column);
@@ -151,12 +184,10 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
         router.get(
             window.location.pathname,
-            {
-                search: search,
+            buildRouterParams({
                 column: column,
                 direction: newDirection,
-                status: filterStatus.length === 0 ? '' : filterStatus,
-            },
+            }),
             {
                 preserveState: true,
                 preserveScroll: true,
@@ -178,12 +209,9 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
         router.get(
             window.location.pathname,
-            {
-                search: search,
-                column: sortColumn,
-                direction: sortDirection,
+            buildRouterParams({
                 status: newFilterStatus.length === 0 ? '' : newFilterStatus,
-            },
+            }),
             {
                 preserveState: true,
                 preserveScroll: true,
@@ -192,16 +220,34 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         );
     };
 
+    const handleUserFilter = (userId: string | undefined) => {
+        let newSelectedUser: UserFilter | null = null;
+
+        if (userId && users) {
+            newSelectedUser = users.find((user) => user.id === userId) || null;
+        }
+
+        setSelectedUser(newSelectedUser);
+
+        const params = buildRouterParams();
+        if (isAdmin) {
+            params.user = newSelectedUser?.id || '';
+        }
+
+        router.get(window.location.pathname, params, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
+
     const debouncedSearch = useCallback(
         debounce((searchTerm: string) => {
             router.get(
                 window.location.pathname,
-                {
+                buildRouterParams({
                     search: searchTerm,
-                    column: sortColumn,
-                    direction: sortDirection,
-                    status: filterStatus.length === 0 ? '' : filterStatus,
-                },
+                }),
                 {
                     preserveState: true,
                     preserveScroll: true,
@@ -209,7 +255,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 },
             );
         }, 300),
-        [sortColumn, sortDirection, filterStatus],
+        [buildRouterParams],
     );
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,13 +267,9 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const handlePageChange = (page: number) => {
         router.get(
             window.location.pathname,
-            {
-                search: search,
-                column: sortColumn,
-                direction: sortDirection,
-                status: filterStatus.length === 0 ? '' : filterStatus,
+            buildRouterParams({
                 page: page,
-            },
+            }),
             {
                 preserveState: true,
                 preserveScroll: true,
@@ -248,7 +290,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
         if (formModalMode === 'add') {
             router.post(route('work-orders.store'), snakeCaseConvertedData, {
-                // preserveState: true,
+                preserveState: true,
                 onError: (errors) => {
                     setSubmittedOrder(data);
                     setIsFormModalOpen(true);
@@ -342,12 +384,20 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         setSearch(filters.search || '');
         setSortColumn(filters.column || 'order_deadline');
         setSortDirection(filters.direction || 'asc');
-        const statusFilter = filters.status;
-        if (!statusFilter) {
+
+        if (!filters.status) {
             setFilterStatus([]);
         } else {
-            setFilterStatus(Array.isArray(statusFilter) ? statusFilter : [statusFilter]);
+            setFilterStatus(Array.isArray(filters.status) ? filters.status : [filters.status]);
         }
+
+        if (isAdmin && filters.user && users) {
+            const user = users.find((u) => u.id === filters.user);
+            setSelectedUser(user || null);
+        } else {
+            setSelectedUser(null);
+        }
+
         if (flash.success || flash.error) {
             setShowToast(true);
         }
@@ -384,6 +434,45 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 className="w-96"
                                 sizing="md"
                             />
+
+                            {isAdmin && users && (
+                                <Dropdown
+                                    renderTrigger={() => (
+                                        <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                            <Users className="mr-2 h-4 w-4" />
+                                            {selectedUser ? `Pengguna: ${selectedUser.name}` : 'Semua Pengguna'}
+                                        </Button>
+                                    )}
+                                >
+                                    <DropdownHeader>
+                                        <span className="block text-sm font-semibold">Filter User:</span>
+                                    </DropdownHeader>
+
+                                    <DropdownItem onClick={() => handleUserFilter('')} className={!selectedUser ? 'bg-blue-50 text-blue-600' : ''}>
+                                        <div className="flex w-full items-center justify-between">
+                                            <span className={!selectedUser ? 'font-medium' : ''}>Semua Pengguna</span>
+                                            {!selectedUser && <Check className="ml-2 h-4 w-4" />}
+                                        </div>
+                                    </DropdownItem>
+
+                                    <DropdownDivider />
+
+                                    {users.map((user) => (
+                                        <DropdownItem
+                                            key={user.id}
+                                            onClick={() => handleUserFilter(user.id)}
+                                            className={selectedUser?.id === user.id ? 'bg-blue-50 text-blue-600' : ''}
+                                        >
+                                            <div className="flex w-full items-center justify-between">
+                                                <div className="flex flex-col">
+                                                    <span className={selectedUser?.id === user.id ? 'font-medium' : ''}>{user.name}</span>
+                                                </div>
+                                                {selectedUser?.id === user.id && <Check className="ml-2 h-4 w-4" />}
+                                            </div>
+                                        </DropdownItem>
+                                    ))}
+                                </Dropdown>
+                            )}
 
                             <Dropdown
                                 renderTrigger={() => (
@@ -459,13 +548,15 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                 </DropdownItem>
                             </Dropdown>
 
-                            <Button
-                                onClick={handleOpenAddModal}
-                                className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
-                            >
-                                <Plus className="mr-2 h-4 w-4" />
-                                Tambah
-                            </Button>
+                            {isUser && (
+                                <Button
+                                    onClick={handleOpenAddModal}
+                                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                                >
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Tambah
+                                </Button>
+                            )}
                         </div>
                     </div>
 
@@ -486,8 +577,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             currentPage={workOrders.current_page}
                             totalPages={workOrders.last_page}
                             onPageChange={handlePageChange}
-                            previousLabel='Sebelumnya'
-                            nextLabel='Selanjutnya'
+                            previousLabel="Sebelumnya"
+                            nextLabel="Selanjutnya"
                             showIcons
                         />
                     </div>
