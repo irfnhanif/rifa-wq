@@ -1,4 +1,5 @@
 // resources/js/components/WorkOrderDetailModal.tsx
+import { useAuth } from '@/hooks/use-auth';
 import { Badge, Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
 import { Activity, CalendarDays, FileText, Layers, LucideIcon, NotepadText, Phone, Ruler, SquarePen, Trash2, User, Wallet } from 'lucide-react';
 import React from 'react';
@@ -45,6 +46,8 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
         month: '2-digit',
         year: 'numeric',
     });
+
+    const { isUser } = useAuth();
 
     const diffDays = Math.ceil((new Date(workOrder.orderDeadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
     const daysRemainingBadgeColor = diffDays > 0 ? 'success' : diffDays === 0 ? 'warning' : 'failure';
@@ -95,16 +98,19 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                     </div>
                 </div>
             </ModalBody>
-            <ModalFooter className="justify-start border-t border-[#E5E7EB]">
-                <Button onClick={() => onEdit(workOrder)} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200">
-                    <SquarePen className="mr-2 h-4 w-4" />
-                    Edit
-                </Button>
-                <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Hapus
-                </Button>
-            </ModalFooter>
+
+            {isUser && (
+                <ModalFooter className="justify-start border-t border-[#E5E7EB]">
+                    <Button onClick={() => onEdit(workOrder)} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200">
+                        <SquarePen className="mr-2 h-4 w-4" />
+                        Edit
+                    </Button>
+                    <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Hapus
+                    </Button>
+                </ModalFooter>
+            )}
         </Modal>
     );
 };
