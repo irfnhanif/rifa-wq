@@ -142,6 +142,10 @@ class WorkOrderController extends Controller
         try {
             $workOrder = WorkOrder::findOrFail($id);
 
+            if ($workOrder->user_id !== $request->user()->id) {
+                abort(403, 'Anda hanya dapat mengedit order milik anda sendiri');
+            }
+
             $validated = $request->validated();
 
             if (!in_array($validated['order_status'], ['FINISHED', 'PICKED_UP']) && $workOrder['order_cost'] !== null) {
@@ -160,6 +164,10 @@ class WorkOrderController extends Controller
     {
         try {
             $workOrder = WorkOrder::findOrFail($id);
+
+            if ($workOrder->user_id !== $request->user()->id) {
+                abort(403, 'Anda hanya dapat menandai order milik anda sendiri');
+            }
 
             $validated = $request->validate(
                 [
@@ -195,10 +203,14 @@ class WorkOrderController extends Controller
         }
     }
 
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
         try {
             $workOrder = WorkOrder::findOrFail($id);
+
+            if ($workOrder->user_id !== $request->user()->id) {
+                abort(403, 'Anda hanya dapat menandai order milik anda sendiri');
+            }
 
             $workOrder->delete();
 
