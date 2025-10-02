@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/use-auth';
 import { Notification } from '@/types/Notification';
 import { Link, router, usePage } from '@inertiajs/react';
 import { Avatar, Button, Dropdown, DropdownHeader, DropdownItem, Navbar, NavbarBrand, Popover } from 'flowbite-react';
@@ -6,19 +7,13 @@ import React, { useState } from 'react';
 import NotificationPopover from './notification-popover';
 
 interface SharedProps {
-    auth: {
-        user: {
-            id: string;
-            name: string;
-            email: string;
-        } | null;
-    };
     notifications: Notification[];
     [key: string]: any;
 }
 
 const AppNavbar: React.FC = () => {
-    const { auth, notifications } = usePage<SharedProps>().props;
+    const { user } = useAuth();
+    const { notifications } = usePage<SharedProps>().props;
     const [localNotifications, setLocalNotifications] = useState(notifications);
     const unreadCount = localNotifications.filter((n) => !n.readStatus).length;
 
@@ -88,15 +83,15 @@ const AppNavbar: React.FC = () => {
                     </Button>
                 </Popover>
 
-                {auth.user && (
+                {user && (
                     <Dropdown
                         arrowIcon={false}
                         inline
-                        label={<Avatar alt="User settings" placeholderInitials={getInitials(auth.user.name)} rounded />}
+                        label={<Avatar alt="User settings" placeholderInitials={getInitials(user.name)} rounded />}
                     >
                         <DropdownHeader>
-                            <span className="mb-0.5 block text-base">{auth.user.name}</span>
-                            <span className="block truncate text-sm font-medium">{auth.user.email}</span>
+                            <span className="mb-0.5 block text-base">{user.name}</span>
+                            <span className="block truncate text-sm font-medium">{user.email}</span>
                         </DropdownHeader>
                         <DropdownItem icon={LogOut} onClick={() => router.post(route('logout'))}>
                             Keluar
