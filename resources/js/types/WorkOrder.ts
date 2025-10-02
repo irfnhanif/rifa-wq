@@ -16,6 +16,6 @@ export interface WorkOrder {
     updatedAt: string;
     user?: {
         id: string;
-        username: string;
+        name: string;
     };
 }
