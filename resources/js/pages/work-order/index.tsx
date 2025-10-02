@@ -418,7 +418,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 <Head title="Antrian Pekerjaan" />
                 <div className="px-28 py-4">
                     <div className="flex items-center justify-end gap-3 pb-4">
-                        <StatCard title="Antrian Kerja" value={stats.queueCount} />
+                        <StatCard title="Pekerjaan Selesai" value={stats.queueCount} />
                         <StatCard title="Penghasilan Hari Ini" value={stats.dailyRevenue} />
                     </div>
                     <div className="flex items-center justify-between px-7 py-4">
