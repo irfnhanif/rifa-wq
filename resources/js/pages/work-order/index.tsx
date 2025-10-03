@@ -605,7 +605,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                 confirmText="Hapus"
             >
                 Apakah Anda yakin ingin menghapus pekerjaan untuk pelanggan
-                <span className="font-bold"> {selectedOrder?.orderTitle}</span>? Tindakan ini tidak dapat dibatalkan.
+                <span className="font-bold"> {selectedOrder?.customerName}</span>? Tindakan ini tidak dapat dibatalkan.
             </ConfirmationModal>
 
             <MarkAsDoneModal

@@ -46,7 +46,7 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
             <ModalBody>
                 <form id="mark-as-done-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <p className="text-base text-[#4A5565]">
-                        Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik
+                        Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik {" "}
                         <span className="font-semibold">{order?.customerName}</span>.
                     </p>
                     <div>
