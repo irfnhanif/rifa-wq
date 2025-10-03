@@ -12,6 +12,7 @@ export interface WorkOrder {
     orderDeadline: string | Date;
     orderCost: number | null;
     orderStatus: Status;
+    deleted: boolean;
     createdAt: string;
     updatedAt: string;
     user?: {
