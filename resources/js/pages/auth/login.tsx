@@ -10,28 +10,28 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     return (
-        <AuthLayout title="Masuk RIFA-WQ" description="Masukkan email dan kata sandi di bawah ini untuk masuk">
+        <AuthLayout title="Masuk RIFA-WQ" description="Masukkan name dan kata sandi di bawah ini untuk masuk">
             <Head title="Log in" />
             <Form method="post" action={route('login')} resetOnSuccess={['password']} className="flex flex-col gap-6">
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
-                            <div>
-                                <Label htmlFor="email" className="mb-1">
-                                    Email
+                            <div className='gap-1'>
+                                <Label htmlFor="name" className="mb-1">
+                                    Nama
                                 </Label>
                                 <TextInput
-                                    id="email"
-                                    type="email"
-                                    name="email"
+                                    id="name"
+                                    type="name"
+                                    name="name"
                                     required
                                     autoFocus
                                     tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
-                                    color={errors.email ? 'failure' : undefined}
+                                    autoComplete="name"
+                                    placeholder=""
+                                    color={errors.name ? 'failure' : undefined}
                                 />
-                                <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
+                                <HelperText className="text-xs font-light text-red-800">{errors.name}</HelperText>
                             </div>
 
                             <div>

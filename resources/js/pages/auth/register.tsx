@@ -28,22 +28,9 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="nama lengkap"
+                                    placeholder="Nama pengguna"
                                 />
                                 <HelperText className="text-xs font-light text-red-800">{errors.name}</HelperText>
-                            </div>
-                            <div className="grid gap-1">
-                                <Label htmlFor="email">Email</Label>
-                                <TextInput
-                                    id="email"
-                                    type="email"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="email"
-                                    name="email"
-                                    placeholder="email@example.com"
-                                />
-                                <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
                             </div>
                             <div className="grid gap-1">
                                 <Label htmlFor="password">Password</Label>
