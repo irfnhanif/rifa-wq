@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'shared_email' => env('SHARED_EMAIL', 'admin@yourcompany.com'),
 ];

@@ -52,7 +52,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function workOrders(): HasMany {
+    public function workOrders(): HasMany
+    {
         return $this->hasMany(WorkOrder::class);
     }
 
@@ -60,6 +61,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function getEmailAttribute()
+    {
+        return config('app.shared_email', 'shared@example.com');
+    }
+
 
     public function sendPasswordResetNotification($token)
     {

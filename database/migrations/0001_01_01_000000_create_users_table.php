@@ -14,13 +14,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('gen_random_uuid()'));
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('name')->unique();
+            $table->string('email');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['USER', 'ADMIN'])->default('USER');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('name');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

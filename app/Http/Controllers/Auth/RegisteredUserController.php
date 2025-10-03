@@ -32,13 +32,14 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $sharedEmail = config('app.shared_email', 'shared@example,com');
+
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $sharedEmail,
             'password' => Hash::make($request->password),
         ]);
 
