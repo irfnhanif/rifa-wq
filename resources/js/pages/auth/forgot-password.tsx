@@ -6,7 +6,7 @@ import { FormEventHandler } from 'react';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
-        email: '',
+        name: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -15,7 +15,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
     };
 
     return (
-        <AuthLayout title="Lupa Password" description="Masukkan email akun anda untuk menerima tautan reset password">
+        <AuthLayout title="Lupa Password" description="Masukkan name akun anda untuk menerima tautan reset password">
             <Head title="Forgot password" />
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
@@ -23,20 +23,20 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <div className="space-y-6">
                 <form onSubmit={submit}>
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Alamat Email</Label>
+                        <Label htmlFor="name">Nama</Label>
                         <TextInput
-                            id="email"
-                            type="email"
-                            name="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
+                            id="name"
+                            type="name"
+                            name="name"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
                             autoComplete="off"
                             autoFocus
-                            placeholder="email@example.com"
-                            color={errors.email ? 'failure' : undefined}
+                            placeholder="Nama pengguna"
+                            color={errors.name ? 'failure' : undefined}
                             required
                         />
-                        <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
+                        <HelperText className="text-xs font-light text-red-800">{errors.name}</HelperText>
                     </div>
 
                     <div className="my-6 flex items-center justify-start">

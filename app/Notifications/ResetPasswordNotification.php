@@ -7,9 +7,14 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class ResetPasswordNotification extends ResetPassword
 {
-    /**
-     * Build the mail representation of the notification.
-     */
+
+    protected $userName;
+
+    public function __construct($token, $userName = null) {
+        parent::__construct($token);
+        $this->userName = $userName;
+    }
+
     public function toMail($notifiable): MailMessage
     {
         if (! $this->token) {
@@ -24,9 +29,9 @@ class ResetPasswordNotification extends ResetPassword
         return (new MailMessage)
             ->subject('Reset Password - ' . config('app.name'))
             ->greeting('Halo!')
-            ->line('Anda menerima email ini karena kami menerima permintaan reset password untuk akun Anda.')
+            ->line("Anda menerima email ini karena kami menerima permintaan reset password untuk akun: {$this->userName}.")
             ->action('Reset Password', $url)
-            ->line('Link reset password ini akan kedaluwarsa dalam ' . config('auth.passwords.users.expire') . ' menit.')
+            ->line('Link reset password ini akan kadaluarsa dalam ' . config('auth.passwords.users.expire') . ' menit.')
             ->line('Jika Anda tidak meminta reset password, tidak ada tindakan lebih lanjut yang diperlukan.')
             ->salutation('Salam, Tim ' . config('app.name'));
     }
