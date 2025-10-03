@@ -85,12 +85,26 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
         orderStatus: 'PENDING',
         orderCost: 0,
         orderDeadline: new Date().toISOString().split('T')[0],
-        orderDescription: '', // ✅ Always string
+        orderDescription: '',
     });
+
+    const convertToStringDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     useEffect(() => {
         if (initialData) {
-            setFormData(initialData);
+            const processedData = { ...initialData };
+
+            if (processedData.orderDeadline) {
+                const date = new Date(processedData.orderDeadline);
+                processedData.orderDeadline = convertToStringDate(date);
+            }
+
+            setFormData(processedData);
         }
     }, [initialData]);
 
@@ -104,10 +118,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
             return;
         }
 
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const dateString = `${year}-${month}-${day}`;
+        const dateString = convertToStringDate(date);
 
         setFormData((prev) => ({ ...prev, orderDeadline: dateString }));
     };
@@ -115,7 +126,15 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        onSubmit(formData);
+
+        const submitData = { ...formData };
+
+        if (submitData.orderDeadline) {
+            submitData.orderDeadline =
+                typeof submitData.orderDeadline === 'string' ? submitData.orderDeadline : convertToStringDate(submitData.orderDeadline);
+        }
+
+        onSubmit(submitData);
     };
 
     return (
@@ -210,7 +229,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         color={errors.printing_material ? 'failure' : undefined}
                         required
                     >
-                        <option value="">Select Material</option>
+                        <option value="">Pilih Bahan</option>
                         <option value="HVS">HVS</option>
                         <option value="Flexi">Flexi</option>
                         <option value="Sticker">Sticker</option>
