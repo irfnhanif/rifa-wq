@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WorkOrder extends Model
 {
+    use SoftDeletes;
+
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -21,7 +24,7 @@ class WorkOrder extends Model
         'printing_material',
         'order_deadline',
         'order_status',
-        'order_cost'
+        'order_cost',
     ];
 
     protected $casts = [

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('order_deadline');
             $table->integer('order_cost')->nullable();
             $table->enum('order_status', ['PENDING', 'IN_PROCESS', 'FINISHED', 'PICKED_UP'])->default('PENDING');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->index('customer_name');

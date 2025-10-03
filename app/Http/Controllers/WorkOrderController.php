@@ -36,7 +36,7 @@ class WorkOrderController extends Controller
 
         $validatedUserId = is_string($userId) && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userId) ? $userId : '';
 
-        $query = WorkOrder::query();
+        $query = $request->user()->role === 'ADMIN' ? WorkOrder::withTrashed() : WorkOrder::query();
 
         if ($request->user()->role === 'ADMIN') {
             if (!empty($validatedUserId) && User::where('id', $validatedUserId)->exists()) {
@@ -78,13 +78,21 @@ class WorkOrderController extends Controller
                 'orderDeadline' => $workOrder->order_deadline,
                 'orderStatus' => $workOrder->order_status,
                 'orderCost' => $workOrder->order_cost,
+                'deleted' => $workOrder->trashed(),
                 'createdAt' => $workOrder->created_at,
                 'updatedAt' => $workOrder->updated_at,
+                'deletedAt' => $workOrder->deleted_at,
                 'user' => $workOrder->user ? ['id' => $workOrder->user->id, 'name' => $workOrder->user->name] : null,
             ];
         });
 
-        $statsQuery = WorkOrder::whereIn('order_status', ['FINISHED', 'PICKED_UP'])
+        if ($request->user()->role === 'ADMIN') {
+            $statsQuery = WorkOrder::withTrashed();
+        } else {
+            $statsQuery = WorkOrder::query();
+        }
+
+        $statsQuery->whereIn('order_status', ['FINISHED', 'PICKED_UP'])
             ->whereDate('updated_at', now());
 
         if ($request->user()->role !== 'ADMIN') {
