@@ -63,7 +63,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         return Array.isArray(filters.status) ? filters.status : [filters.status];
     });
     const [selectedUser, setSelectedUser] = useState<UserFilter | null>(() => {
-        console.log(users);
         if (filters.user && users) {
             return users.find((user) => user.id === filters.user) || null;
         }
@@ -291,10 +290,9 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
         if (formModalMode === 'add') {
             router.post(route('work-orders.store'), snakeCaseConvertedData, {
                 preserveState: true,
-                onError: (errors) => {
+                onError: () => {
                     setSubmittedOrder(data);
                     setIsFormModalOpen(true);
-                    console.log('Validation errors:', errors);
                 },
                 onSuccess: () => {
                     setSubmittedOrder(null);
@@ -311,10 +309,9 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             }
 
             router.put(route('work-orders.update', editingOrder?.id), snakeCaseConvertedData, {
-                onError: (errors) => {
+                onError: () => {
                     setSubmittedOrder(data);
                     setIsFormModalOpen(true);
-                    console.log('Validation errors:', errors);
                 },
                 onSuccess: () => {
                     setSubmittedOrder(null);
@@ -326,7 +323,6 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
     const handleConfirmDelete = () => {
         if (selectedOrder) {
-            console.log('Deleting order:', selectedOrder);
             router.delete(route('work-orders.destroy', selectedOrder?.id), {
                 onSuccess: () => {
                     setSelectedOrder(null);
