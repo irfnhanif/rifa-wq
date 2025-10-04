@@ -92,8 +92,13 @@ class WorkOrderController extends Controller
             $statsQuery = WorkOrder::query();
         }
 
+        $businessDate = now()->hour < 5 ? now()->subDay()->startOfDay() : now()->startOfDay();
+
         $statsQuery->whereIn('order_status', ['FINISHED', 'PICKED_UP'])
-            ->whereDate('updated_at', now());
+            ->whereBetween('updated_at', [
+                $businessDate,
+                $businessDate->copy()->addDay()->setTime(5, 0, 0)
+            ]);
 
         if ($request->user()->role !== 'ADMIN') {
             $statsQuery->where('user_id', $request->user()->id);
