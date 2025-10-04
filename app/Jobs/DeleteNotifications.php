@@ -17,9 +17,6 @@ class DeleteNotifications implements ShouldQueue
     public function handle(): void
     {
         $thirtyDaysAgo = Carbon::today()->subDays(30);
-
-        $notifications = Notification::whereDate('created_at', '>=', $thirtyDaysAgo);
-
-        $notifications->delete();
+        Notification::whereDate('created_at', '>=', $thirtyDaysAgo)->delete();
     }
 }
