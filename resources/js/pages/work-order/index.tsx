@@ -73,6 +73,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const { errors, flash } = usePage<{ errors: Record<string, string>; flash: { success?: string; error?: string } }>().props;
 
     const sortOptions = [
+        { value: 'created_at', label: 'Pekerjaan Dibuat' },
         { value: 'order_deadline', label: 'Deadline' },
         { value: 'customer_name', label: 'Nama Pelanggan' },
         { value: 'order_title', label: 'Judul Pekerjaan' },
