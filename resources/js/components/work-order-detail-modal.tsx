@@ -1,7 +1,21 @@
 // resources/js/components/WorkOrderDetailModal.tsx
 import { useAuth } from '@/hooks/use-auth';
 import { Badge, Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'flowbite-react';
-import { Activity, CalendarDays, FileText, Layers, LucideIcon, NotepadText, Phone, Ruler, SquarePen, Trash2, User, Wallet } from 'lucide-react';
+import {
+    Activity,
+    CalendarDays,
+    FileText,
+    Handshake,
+    Layers,
+    LucideIcon,
+    NotepadText,
+    Phone,
+    Ruler,
+    SquarePen,
+    Trash2,
+    User,
+    Wallet,
+} from 'lucide-react';
 import React from 'react';
 import { WorkOrder } from '../types/WorkOrder';
 
@@ -47,7 +61,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
         year: 'numeric',
     });
 
-    const { isUser } = useAuth();
+    const { isUser, isAdmin } = useAuth();
 
     const diffDays = Math.ceil((new Date(workOrder.orderDeadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
     const daysRemainingBadgeColor = diffDays > 0 ? 'success' : diffDays === 0 ? 'warning' : 'failure';
@@ -89,12 +103,13 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                         </div>
                     </div>
 
-                    <div>
+                    <div className="grid grid-cols-2 gap-4">
                         <DetailItem
                             icon={Wallet}
                             label="Biaya Pekerjaan"
                             value={workOrder.orderCost ? `Rp${workOrder.orderCost.toLocaleString('id-ID')}` : '-'}
                         />
+                        {isAdmin ? <DetailItem icon={Handshake} label="Karyawan" value={workOrder.user?.name} /> : <div />}
                     </div>
                 </div>
             </ModalBody>
