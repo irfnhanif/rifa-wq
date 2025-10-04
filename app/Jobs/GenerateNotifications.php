@@ -22,8 +22,7 @@ class GenerateNotifications implements ShouldQueue
             Notification::create([
                 'user_id' => $workOrder['user_id'],
                 'work_order_id' => $workOrder['id'],
-                'message' => sprintf('Pekerjaan %s memiliki deadline hari ini.', $workOrder['order_title']),
-                'read_status' => false
+                'message' => sprintf('Pekerjaan %s memiliki deadline hari ini.', $workOrder['order_title'])
             ]);
         }
     }

@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/use-auth';
 import { Notification } from '@/types/Notification';
 import { Button } from 'flowbite-react';
 import { Bell, CheckCheck } from 'lucide-react';
@@ -10,11 +11,16 @@ interface NotificationsPopoverProps {
 }
 
 const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({ notifications, onMarkAllAsRead, onMarkOneAsRead }) => {
-    const unreadNotifications = notifications.filter((n) => !n.readStatus);
-    const readNotifications = notifications.filter((n) => n.readStatus);
+    const { isAdmin, isUser } = useAuth();
+
+    const unreadNotifications = isAdmin
+        ? (notifications?.filter((n) => !n.adminReadStatus) ?? [])
+        : (notifications?.filter((n) => !n.readStatus) ?? []);
+
+    const readNotifications = isAdmin ? (notifications?.filter((n) => n.adminReadStatus) ?? []) : (notifications?.filter((n) => n.readStatus) ?? []);
 
     const handleNotificationClick = (notification: Notification) => {
-        if (!notification.readStatus) {
+        if ((isUser && notification.readStatus !== true) || (isAdmin && notification.adminReadStatus !== true)) {
             onMarkOneAsRead(notification.id);
         }
     };

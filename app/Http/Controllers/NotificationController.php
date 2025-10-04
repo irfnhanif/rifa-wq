@@ -7,16 +7,24 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function markAllAsRead()
+    public function markAllAsRead(Request $request)
     {
-        Notification::where('read_status', false)->update(['read_status' => true]);
+        if ($request->user()->role === 'ADMIN') {
+            Notification::where('admin_read_status', false)->update(['admin_read_status' => true]);
+        } else {
+            Notification::where('read_status', false)->update(['read_status' => true]);
+        }
 
         return redirect()->route('work-orders.index');
     }
 
-    public function markAsRead(string $id)
+    public function markAsRead(Request $request, string $id)
     {
-        Notification::findOrFail($id)->update(['read_status' => true]);
+        if ($request->user()->role === 'ADMIN') {
+            Notification::findOrFail($id)->update(['admin_read_status' => true]);
+        } else {
+            Notification::findOrFail($id)->update(['read_status' => true]);
+        }
 
         return redirect()->route('work-orders.index');
     }

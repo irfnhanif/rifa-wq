@@ -7,18 +7,25 @@ import React, { useState } from 'react';
 import NotificationPopover from './notification-popover';
 
 interface SharedProps {
-    notifications: Notification[];
+    notifications?: Notification[];
     [key: string]: any;
 }
 
 const AppNavbar: React.FC = () => {
-    const { user } = useAuth();
-    const { notifications } = usePage<SharedProps>().props;
-    const [localNotifications, setLocalNotifications] = useState(notifications);
-    const unreadCount = localNotifications.filter((n) => !n.readStatus).length;
+    const { user, isAdmin } = useAuth();
+    const { notifications = [] } = usePage<SharedProps>().props;
+
+    const [localNotifications, setLocalNotifications] = useState(notifications || []);
+    const unreadCount = isAdmin
+        ? localNotifications.filter((n) => !n.adminReadStatus).length
+        : localNotifications.filter((n) => !n.readStatus).length;
 
     const handleMarkAllAsRead = () => {
-        setLocalNotifications((prev) => prev.map((n) => ({ ...n, readStatus: true })));
+        if (isAdmin) {
+            setLocalNotifications((prev) => prev.map((n) => ({ ...n, adminReadStatus: true })));
+        } else {
+            setLocalNotifications((prev) => prev.map((n) => ({ ...n, readStatus: true })));
+        }
 
         router.patch(
             route('notifications.markAllAsRead'),
@@ -31,7 +38,11 @@ const AppNavbar: React.FC = () => {
     };
 
     const handleMarkOneAsRead = (notificationId: string) => {
-        setLocalNotifications((prev) => prev.map((n) => (n.id === notificationId ? { ...n, readStatus: true } : n)));
+        if (isAdmin) {
+            setLocalNotifications((prev) => prev.map((n) => (n.id === notificationId ? { ...n, adminReadStatus: true } : n)));
+        } else {
+            setLocalNotifications((prev) => prev.map((n) => (n.id === notificationId ? { ...n, readStatus: true } : n)));
+        }
 
         router.patch(
             route('notifications.markAsRead', notificationId),
@@ -84,11 +95,7 @@ const AppNavbar: React.FC = () => {
                 </Popover>
 
                 {user && (
-                    <Dropdown
-                        arrowIcon={false}
-                        inline
-                        label={<Avatar alt="User settings" placeholderInitials={getInitials(user.name)} rounded />}
-                    >
+                    <Dropdown arrowIcon={false} inline label={<Avatar alt="User settings" placeholderInitials={getInitials(user.name)} rounded />}>
                         <DropdownHeader>
                             <span className="mb-0.5 block text-base">{user.name}</span>
                             <span className="block truncate text-sm font-medium">{user.email}</span>

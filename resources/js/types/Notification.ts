@@ -4,6 +4,7 @@ export interface Notification {
     workOrderId: string;
     message: string;
     readStatus: boolean;
-    createdAt: Date
-    updatedAt: Date
+    adminReadStatus: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('work_order_id')->constrained('work_orders')->onDelete('cascade');
             $table->string('message');
-            $table->boolean('read_status');
+            $table->boolean('read_status')->default(false);
+            $table->boolean('admin_read_status')->default(false);
             $table->timestamps();
         });
     }

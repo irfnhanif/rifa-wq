@@ -14,7 +14,8 @@ class Notification extends Model
         'user_id',
         'work_order_id',
         'message',
-        'read_status'
+        'read_status',
+        'admin_read_status'
     ];
 
     public function user(): BelongsTo
