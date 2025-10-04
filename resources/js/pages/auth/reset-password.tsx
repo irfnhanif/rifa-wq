@@ -6,35 +6,35 @@ import { Button, HelperText, Label, TextInput } from 'flowbite-react';
 
 interface ResetPasswordProps {
     token: string;
-    email: string;
+    name: string;
 }
 
-export default function ResetPassword({ token, email }: ResetPasswordProps) {
+export default function ResetPassword({ token, name }: ResetPasswordProps) {
     return (
-        <AuthLayout title="Reset Password" description="Masukkan email akun anda">
+        <AuthLayout title="Reset Password" description="Ganti password akun RIFA-WQ">
             <Head title="Reset password" />
 
             <Form
                 method="post"
                 action={route('password.store')}
-                transform={(data) => ({ ...data, token, email })}
+                transform={(data) => ({ ...data, token, name })}
                 resetOnSuccess={['password', 'password_confirmation']}
             >
                 {({ processing, errors }) => (
                     <div className="grid gap-6">
                         <div className="grid gap-0.5">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="name">Nama</Label>
                             <TextInput
-                                id="email"
-                                type="email"
-                                name="email"
-                                autoComplete="email"
-                                value={email}
+                                id="name"
+                                type="name"
+                                name="name"
+                                autoComplete="name"
+                                value={name}
                                 className="mt-1 block w-full"
                                 readOnly
-                                color={errors.email ? 'failure' : undefined}
+                                color={errors.name ? 'failure' : undefined}
                             />
-                            <HelperText className="text-xs font-light text-red-800">{errors.email}</HelperText>
+                            <HelperText className="text-xs font-light text-red-800">{errors.name}</HelperText>
                         </div>
 
                         <div className="grid gap-0.5">
