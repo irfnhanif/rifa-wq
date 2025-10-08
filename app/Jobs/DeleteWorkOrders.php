@@ -17,6 +17,6 @@ class DeleteWorkOrders implements ShouldQueue
     public function handle(): void
     {
         $thirtyDaysAgo = Carbon::today()->subDays(30);
-        WorkOrder::where('created_at', '>=', $thirtyDaysAgo)->forceDelete();
+        WorkOrder::where('created_at', '<=', $thirtyDaysAgo)->forceDelete();
     }
 }

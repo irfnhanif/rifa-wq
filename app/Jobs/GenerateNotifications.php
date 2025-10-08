@@ -16,7 +16,7 @@ class GenerateNotifications implements ShouldQueue
 
     public function handle(): void
     {
-        $workOrders = WorkOrder::whereIn('order_status', ['PENDING', 'IN_PROCESS'])->whereDate('order_deadline', now())->get();
+        $workOrders = WorkOrder::whereIn('order_status', ['PENDING', 'IN_PROCESS'])->whereDate('order_deadline', "<=",  now())->get();
 
         foreach ($workOrders as $workOrder) {
             Notification::create([
