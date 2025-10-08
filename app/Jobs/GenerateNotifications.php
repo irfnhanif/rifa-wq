@@ -16,13 +16,17 @@ class GenerateNotifications implements ShouldQueue
 
     public function handle(): void
     {
-        $workOrders = WorkOrder::whereIn('order_status', ['PENDING', 'IN_PROCESS'])->whereDate('order_deadline', "<=",  now())->get();
+        $workOrders = WorkOrder::whereIn('order_status', ['PENDING', 'IN_PROCESS'])
+            ->whereDate('order_deadline', '<=', now()->startOfDay()
+            ->toDateString())
+            ->get();
 
         foreach ($workOrders as $workOrder) {
+            $todayOrDate = $workOrder->order_deadline->isToday() ? 'hari ini' : sprintf('tanggal %s', $workOrder->order_deadline->format('d/m/Y'));
             Notification::create([
-                'user_id' => $workOrder['user_id'],
-                'work_order_id' => $workOrder['id'],
-                'message' => sprintf('Pekerjaan %s memiliki deadline hari ini.', $workOrder['order_title'])
+                'user_id' => $workOrder->user_id,
+                'work_order_id' => $workOrder->id,
+                'message' => sprintf('Pekerjaan %s memiliki deadline %s.', $workOrder->order_title, $todayOrDate)
             ]);
         }
     }
