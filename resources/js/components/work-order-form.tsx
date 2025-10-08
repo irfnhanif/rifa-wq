@@ -1,6 +1,6 @@
 import { WorkOrder } from '@/types/WorkOrder';
 import { Datepicker, HelperText, Label, TextInput, Textarea } from 'flowbite-react';
-import { CalendarDays, Phone, Ruler, User } from 'lucide-react';
+import { CalendarDays, Phone, Printer, Ruler, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 const Required = () => <span className="text-[#C70036]">*</span>;
@@ -220,20 +220,16 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                             Bahan Cetak <Required />
                         </Label>
                     </div>
-                    <select
+                    <TextInput
                         id="printingMaterial"
                         name="printingMaterial"
-                        value={formData.printingMaterial || ''}
+                        value={formData.printingMaterial}
                         onChange={handleChange}
-                        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="(Contoh: HVS, Art Paper, Carton, dll.)"
+                        icon={Printer}
                         color={errors.printing_material ? 'failure' : undefined}
                         required
-                    >
-                        <option value="">Pilih Bahan</option>
-                        <option value="HVS">HVS</option>
-                        <option value="Flexi">Flexi</option>
-                        <option value="Sticker">Sticker</option>
-                    </select>
+                    />
                     <HelperText className="mb-2 text-xs font-light text-red-800">{errors.printing_material}</HelperText>
                 </div>
             </div>
