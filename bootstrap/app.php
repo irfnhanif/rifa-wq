@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserRole::class,
+            'guest' => \Illuminate\Auth\Middleware\RedirectIfAuthenticated::class,
+            'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         ]);
         $middleware->web(append: [
             HandleAppearance::class,

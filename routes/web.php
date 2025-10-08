@@ -23,5 +23,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/notifications/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 });
 
-require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
