@@ -3,16 +3,8 @@
 use App\Jobs\DeleteNotifications;
 use App\Jobs\DeleteWorkOrders;
 use App\Jobs\GenerateNotifications;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
-
+Schedule::job(new DeleteNotifications)->dailyAt('04.55');
+Schedule::job(new DeleteWorkOrders)->dailyAt('04.55');
 Schedule::job(new GenerateNotifications)->dailyAt('05.00');
-Schedule::job(new DeleteNotifications)->dailyAt('05.00');
-Schedule::job(new DeleteWorkOrders)->dailyAt('05.00');
-
-// Schedule::job(new GenerateNotifications)->everyMinute();
