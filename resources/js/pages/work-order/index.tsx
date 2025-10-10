@@ -435,7 +435,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             {isAdmin && users && (
                                 <Dropdown
                                     renderTrigger={() => (
-                                        <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                        <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                             <Users className="mr-2 h-4 w-4" />
                                             {selectedUser ? `Pengguna: ${selectedUser.name}` : 'Semua Pengguna'}
                                         </Button>
@@ -473,7 +473,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                         <ListFilter className="mr-2 h-4 w-4" />
                                         Filter Status Pekerjaan
                                     </Button>
@@ -502,7 +502,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="border-2 border-[#1447E6] bg-transparent text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
                                         {getSortIcon()}
                                         {/* cspell:disable-next-line */}
                                         {getCurrentSortLabel()}
