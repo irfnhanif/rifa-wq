@@ -35,7 +35,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $sharedEmail = config('app.shared_email', 'shared@example,com');
+        $sharedEmail = config('app.shared_email', 'shared@example.com');
 
         $user = User::create([
             'name' => $request->name,
