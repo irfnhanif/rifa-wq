@@ -138,7 +138,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
     };
 
     return (
-        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4" method={formMethod}>
+        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4" method={formMethod} autoComplete='off'>
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="customerName">

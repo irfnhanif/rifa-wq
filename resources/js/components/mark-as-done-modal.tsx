@@ -44,7 +44,7 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
         <Modal show={show} size="xl" onClose={onClose} popup>
             <ModalHeader className="m-3 border-b border-[#E5E7EB]">Selesai Mengerjakan?</ModalHeader>
             <ModalBody>
-                <form id="mark-as-done-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form id="mark-as-done-form" onSubmit={handleSubmit} className="flex flex-col gap-4" autoComplete='off'>
                     <p className="text-base text-[#4A5565]">
                         Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik {" "}
                         <span className="font-semibold">{order?.customerName}</span>.
