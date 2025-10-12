@@ -37,6 +37,21 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon: Icon, label, value, class
     </div>
 );
 
+const DetailItemDescription: React.FC<DetailItemProps> = ({ icon: Icon, label, value, className }) => (
+    <div className={`flex flex-col gap-1 ${className}`}>
+        <div className="flex items-center gap-1.5">
+            <Icon className="h-4 w-4 text-[#6A7282]" />
+            <span className="text-sm text-[#6A7282]">{label}</span>
+        </div>
+        <textarea
+            disabled
+            value={value?.toString() || '-'}
+            className="text-sm font-light text-[#4A5565] border border-gray-300 rounded-md p-2 bg-gray-50"
+            rows={4}
+        />
+    </div>
+);
+
 interface WorkOrderDetailModalProps {
     show: boolean;
     workOrder: WorkOrder | null;
@@ -79,7 +94,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                         </div>
                         <div className="flex flex-col gap-6">
                             <DetailItem icon={FileText} label="Judul Pekerjaan" value={workOrder.orderTitle} />
-                            <DetailItem icon={NotepadText} label="Deskripsi" value={workOrder.orderDescription || '-'} />
+                            <DetailItemDescription icon={NotepadText} label="Deskripsi" value={workOrder.orderDescription || '-'} />
                         </div>
                     </div>
 
