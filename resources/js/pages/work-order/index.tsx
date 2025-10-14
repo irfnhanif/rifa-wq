@@ -75,7 +75,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const sortOptions = [
         { value: 'created_at', label: 'Waktu Dibuat' },
         { value: 'order_deadline', label: 'Deadline' },
-        { value: 'updated_at', label: 'Waktu Update'},
+        { value: 'updated_at', label: 'Waktu Diperbarui'},
         { value: 'order_status', label: 'Status' },
     ];
 

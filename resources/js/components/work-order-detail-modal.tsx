@@ -19,7 +19,6 @@ import {
 import React from 'react';
 import { WorkOrder } from '../types/WorkOrder';
 
-// A small helper component to keep the detail display clean and consistent
 interface DetailItemProps {
     icon: LucideIcon;
     label: string;
@@ -87,7 +86,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
             <ModalHeader className="m-3 border-b border-[#E5E7EB]">Detail Pekerjaan</ModalHeader>
             <ModalBody className="py-6">
                 <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4 border-b border-[#E5E7EB] pb-6">
+                    <div className="grid grid-cols-2 gap-4 border-b border-[#E5E7EB] pb-2">
                         <div className="flex flex-col gap-6">
                             <DetailItem icon={User} label="Nama Pelanggan" value={workOrder.customerName} />
                             <DetailItem icon={Phone} label="Nomor WhatsApp" value={workOrder.whatsappNumber} />
@@ -125,6 +124,16 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                             value={workOrder.orderCost ? `Rp${workOrder.orderCost.toLocaleString('id-ID')}` : '-'}
                         />
                         {isAdmin ? <DetailItem icon={Handshake} label="Karyawan" value={workOrder.user?.name} /> : <div />}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                        Terakhir diperbarui: {new Date(workOrder.updatedAt).toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                        })} {new Date(workOrder.updatedAt).toLocaleTimeString('id-ID', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                        })}
                     </div>
                 </div>
             </ModalBody>
