@@ -13,6 +13,35 @@ interface AdditionalEditFieldsProps {
 }
 
 const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus, orderCost, handleChange, errors = {} }) => {
+    const [displayPrice, setDisplayPrice] = useState('');
+
+    const formatIDR = (num: number) => {
+        return new Intl.NumberFormat('id-ID').format(num);
+    };
+
+    const handlePriceInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const input = e.target.value;
+        const digitsOnly = input.replace(/[^\d]/g, '');
+        const numPrice = parseInt(digitsOnly) || 0;
+
+        setDisplayPrice(formatIDR(numPrice));
+
+        handleChange({
+            ...e,
+            target: {
+                ...e.target,
+                name: 'orderCost',
+                value: numPrice.toString(),
+            },
+        } as React.ChangeEvent<HTMLInputElement>);
+    };
+
+    useEffect(() => {
+        if (orderCost) {
+            setDisplayPrice(formatIDR(orderCost));
+        }
+    }, [orderCost]);
+
     if (!orderStatus) {
         return;
     }
@@ -31,15 +60,12 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     value={orderStatus}
                     onChange={handleChange}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    color={errors.order_status ? 'failure' : undefined}
                     required
                 >
-                    {/* cspell:disable */}
                     <option value="PENDING">Tertunda</option>
                     <option value="IN_PROCESS">Dalam Proses</option>
                     <option value="FINISHED">Selesai</option>
                     <option value="PICKED_UP">Telah Diambil</option>
-                    {/* cspell:enable */}
                 </select>
                 <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_status}</HelperText>
             </div>
@@ -47,7 +73,6 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="orderCost">
-                        {/* cspell:disable-next-line */}
                         Biaya Pekerjaan <Required />
                     </Label>
                 </div>
@@ -55,8 +80,8 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     id="orderCost"
                     name="orderCost"
                     disabled={orderStatus !== 'FINISHED' && orderStatus !== 'PICKED_UP'}
-                    value={orderCost?.toString() || ''}
-                    onChange={handleChange}
+                    value={displayPrice}
+                    onChange={handlePriceInput}
                     placeholder=""
                     color={errors.order_cost ? 'failure' : undefined}
                     addon="Rp"
@@ -138,7 +163,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
     };
 
     return (
-        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4" method={formMethod} autoComplete='off'>
+        <form id="work-order-form" onSubmit={handleSubmit} className="my-3 flex flex-col gap-4" method={formMethod} autoComplete="off">
             <div>
                 <div className="mb-2 block">
                     <Label htmlFor="customerName">
@@ -275,7 +300,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                 />
                 <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_description}</HelperText>
             </div>
-            {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565] dark:text-gray-400">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
+            {!initialData?.orderStatus && (
+                <p className="text-sm font-medium text-[#4A5565] dark:text-gray-400">Harga dapat dimasukkan setelah pekerjaan selesai</p>
+            )}
         </form>
     );
 };
