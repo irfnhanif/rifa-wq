@@ -75,7 +75,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     const sortOptions = [
         { value: 'created_at', label: 'Waktu Dibuat' },
         { value: 'order_deadline', label: 'Deadline' },
-        { value: 'updated_at', label: 'Waktu Diperbarui'},
+        { value: 'updated_at', label: 'Waktu Diperbarui' },
         { value: 'order_status', label: 'Status' },
     ];
 
@@ -418,7 +418,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                         <StatCard title="Penghasilan Hari Ini" value={stats.dailyRevenue} />
                     </div>
                     <div className="flex items-center justify-between px-7 py-4">
-                        <h1 className="text-xl font-bold text-[#101828]">Antrian Pekerjaan</h1>
+                        <h1 className="text-xl font-bold text-[#101828] dark:text-gray-100">Antrian Pekerjaan</h1>
                         <div className="flex items-center gap-4">
                             <TextInput
                                 id="search"
@@ -434,17 +434,22 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             {isAdmin && users && (
                                 <Dropdown
                                     renderTrigger={() => (
-                                        <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                        <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300 dark:border-blue-400 dark:bg-transparent dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white dark:focus:ring-blue-800">
                                             <Users className="mr-2 h-4 w-4" />
                                             {selectedUser ? `Pengguna: ${selectedUser.name}` : 'Semua Pengguna'}
                                         </Button>
                                     )}
                                 >
                                     <DropdownHeader>
-                                        <span className="block text-sm font-semibold">Filter User:</span>
+                                        <span className="block text-sm font-semibold dark:text-gray-200">Filter User:</span>
                                     </DropdownHeader>
 
-                                    <DropdownItem onClick={() => handleUserFilter('')} className={!selectedUser ? 'bg-blue-50 text-blue-600' : ''}>
+                                    <DropdownItem
+                                        onClick={() => handleUserFilter('')}
+                                        className={
+                                            !selectedUser ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300' : 'dark:hover:bg-gray-700'
+                                        }
+                                    >
                                         <div className="flex w-full items-center justify-between">
                                             <span className={!selectedUser ? 'font-medium' : ''}>Semua Pengguna</span>
                                             {!selectedUser && <Check className="ml-2 h-4 w-4" />}
@@ -457,7 +462,11 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                         <DropdownItem
                                             key={user.id}
                                             onClick={() => handleUserFilter(user.id)}
-                                            className={selectedUser?.id === user.id ? 'bg-blue-50 text-blue-600' : ''}
+                                            className={
+                                                selectedUser?.id === user.id
+                                                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                                                    : 'dark:hover:bg-gray-700'
+                                            }
                                         >
                                             <div className="flex w-full items-center justify-between">
                                                 <div className="flex flex-col">
@@ -472,18 +481,18 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300 dark:border-blue-400 dark:bg-transparent dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white dark:focus:ring-blue-800">
                                         <ListFilter className="mr-2 h-4 w-4" />
                                         Filter Status Pekerjaan
                                     </Button>
                                 )}
                             >
                                 <DropdownHeader>
-                                    <span className="block text-sm font-semibold">Filter Status:</span>
+                                    <span className="block text-sm font-semibold dark:text-gray-200">Filter Status:</span>
                                 </DropdownHeader>
 
                                 {filterOptions.map((option) => (
-                                    <DropdownItem key={option.value} className="p-0">
+                                    <DropdownItem key={option.value} className="p-0 dark:hover:bg-gray-700">
                                         <div className="flex w-full items-center p-2">
                                             <Checkbox
                                                 id={`filter-${option.value}`}
@@ -491,7 +500,10 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                                 onChange={() => handleFilterChange(option.value)}
                                                 className="mr-3"
                                             />
-                                            <label htmlFor={`filter-${option.value}`} className="flex-1 cursor-pointer text-left text-sm">
+                                            <label
+                                                htmlFor={`filter-${option.value}`}
+                                                className="flex-1 cursor-pointer text-left text-sm dark:text-gray-200"
+                                            >
                                                 {option.label}
                                             </label>
                                         </div>
@@ -501,9 +513,8 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                             <Dropdown
                                 renderTrigger={() => (
-                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300">
+                                    <Button className="border-2 border-[#1447E6] bg-transparent px-4 py-2 text-[#1447E6] transition-colors hover:bg-[#1447E6] hover:text-white focus:ring-4 focus:ring-blue-300 dark:border-blue-400 dark:bg-transparent dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white dark:focus:ring-blue-800">
                                         {getSortIcon()}
-                                        {/* cspell:disable-next-line */}
                                         {getCurrentSortLabel()}
                                     </Button>
                                 )}
@@ -511,21 +522,25 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                                     <div className="flex items-center gap-2">
                                         {getSortIcon()}
                                         {getCurrentSortLabel()}
-                                        <span className="text-xs text-gray-500">({sortDirection === 'asc' ? 'A-Z' : 'Z-A'})</span>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">({sortDirection === 'asc' ? 'A-Z' : 'Z-A'})</span>
                                     </div>
                                 }
                                 color="gray"
                                 size="sm"
                             >
                                 <DropdownHeader>
-                                    <span className="block text-sm font-semibold">Berdasarkan:</span>
+                                    <span className="block text-sm font-semibold dark:text-gray-200">Berdasarkan:</span>
                                 </DropdownHeader>
 
                                 {sortOptions.map((option) => (
                                     <DropdownItem
                                         key={option.value}
                                         onClick={() => handleSortChange(option.value)}
-                                        className={sortColumn === option.value ? 'bg-blue-50 text-blue-600' : ''}
+                                        className={
+                                            sortColumn === option.value
+                                                ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                                                : 'dark:hover:bg-gray-700'
+                                        }
                                     >
                                         <div className="flex w-full items-center justify-between">
                                             <span className={sortColumn === option.value ? 'font-medium' : ''}>{option.label}</span>
@@ -536,7 +551,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
 
                                 <DropdownDivider />
 
-                                <DropdownItem onClick={toggleSortDirection}>
+                                <DropdownItem onClick={toggleSortDirection} className="dark:hover:bg-gray-700">
                                     <div className="flex items-center gap-2">
                                         {getSortIcon()}
                                         <span>Arah Urutan: {sortDirection === 'asc' ? 'A-Z → Z-A' : 'Z-A → A-Z'}</span>
@@ -547,7 +562,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                             {isUser && (
                                 <Button
                                     onClick={handleOpenAddModal}
-                                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 >
                                     <Plus className="mr-2 h-4 w-4" />
                                     Tambah
@@ -580,6 +595,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     </div>
                 </div>
             </AppLayout>
+            
             <WorkOrderFormModal
                 show={isFormModalOpen}
                 onClose={handleCloseFormModal}
@@ -616,21 +632,21 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
             />
 
             {showToast && flash.success && (
-                <Toast className="fixed top-16 left-1/2 z-50 -translate-x-1/2">
+                <Toast className="fixed top-16 left-1/2 z-50 -translate-x-1/2 dark:bg-gray-800">
                     <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
                         <Check className="h-5 w-5" />
                     </div>
-                    <div className="ml-3 text-sm font-normal">{flash.success}</div>
+                    <div className="ml-3 text-sm font-normal dark:text-gray-200">{flash.success}</div>
                     <ToastToggle onDismiss={handleCloseToast} />
                 </Toast>
             )}
 
             {showToast && flash.error && (
-                <Toast className="fixed top-4 right-4 z-50">
+                <Toast className="fixed top-4 right-4 z-50 dark:bg-gray-800">
                     <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500 dark:bg-red-800 dark:text-red-200">
                         <X className="h-5 w-5" />
                     </div>
-                    <div className="ml-3 text-sm font-normal">{flash.error}</div>
+                    <div className="ml-3 text-sm font-normal dark:text-gray-200">{flash.error}</div>
                     <ToastToggle onDismiss={handleCloseToast} />
                 </Toast>
             )}

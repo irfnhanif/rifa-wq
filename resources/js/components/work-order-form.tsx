@@ -30,7 +30,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     name="orderStatus"
                     value={orderStatus}
                     onChange={handleChange}
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                     color={errors.order_status ? 'failure' : undefined}
                     required
                 >
@@ -41,7 +41,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     <option value="PICKED_UP">Telah Diambil</option>
                     {/* cspell:enable */}
                 </select>
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_status}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_status}</HelperText>
             </div>
 
             <div>
@@ -62,7 +62,7 @@ const AdditionalEditFields: React.FC<AdditionalEditFieldsProps> = ({ orderStatus
                     addon="Rp"
                     required
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_cost}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_cost}</HelperText>
             </div>
         </>
     );
@@ -155,7 +155,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     color={errors.customer_name ? 'failure' : undefined}
                     required
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.customer_name}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.customer_name}</HelperText>
             </div>
 
             <div>
@@ -174,7 +174,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     color={errors.whatsapp_number ? 'failure' : undefined}
                     required
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.whatsapp_number}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.whatsapp_number}</HelperText>
             </div>
 
             <div>
@@ -192,7 +192,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     color={errors.order_title ? 'failure' : undefined}
                     required
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_title}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_title}</HelperText>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -212,7 +212,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         color={errors.printing_size ? 'failure' : undefined}
                         required
                     />
-                    <HelperText className="mb-2 text-xs font-light text-red-800">{errors.printing_size}</HelperText>
+                    <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.printing_size}</HelperText>
                 </div>
                 <div>
                     <div className="mb-2 block">
@@ -230,7 +230,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                         color={errors.printing_material ? 'failure' : undefined}
                         required
                     />
-                    <HelperText className="mb-2 text-xs font-light text-red-800">{errors.printing_material}</HelperText>
+                    <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.printing_material}</HelperText>
                 </div>
             </div>
 
@@ -256,13 +256,13 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     color={errors.order_deadline ? 'failure' : undefined}
                     required
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_deadline}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_deadline}</HelperText>
             </div>
 
             <div>
                 <div className="mb-2 flex justify-between">
                     <Label htmlFor="orderDescription">Deskripsi Tambahan</Label>
-                    <span className="text-xs text-[#6A7282]">Opsional</span>
+                    <span className="text-xs text-[#6A7282] dark:text-gray-400">Opsional</span>
                 </div>
                 <Textarea
                     id="orderDescription"
@@ -273,9 +273,9 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ initialData, onSubmit, fo
                     rows={4}
                     color={errors.order_description ? 'failure' : undefined}
                 />
-                <HelperText className="mb-2 text-xs font-light text-red-800">{errors.order_description}</HelperText>
+                <HelperText className="mb-2 text-xs font-light text-red-800 dark:text-red-400">{errors.order_description}</HelperText>
             </div>
-            {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565]">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
+            {!initialData?.orderStatus && <p className="text-sm font-medium text-[#4A5565] dark:text-gray-400">Harga dapat dimasukkan setelah pekerjaan selesai</p>}
         </form>
     );
 };

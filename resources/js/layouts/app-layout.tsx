@@ -8,9 +8,9 @@ type AppLayoutProps = {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return (
-        <div className="min-h-screen bg-[#F9FAFB]">
+        <div className="min-h-screen bg-[#F9FAFB] dark:bg-gray-900">
             <AppNavbar />
-            <main>{children}</main>
+            <main className="dark:text-gray-100">{children}</main>
         </div>
     );
 };

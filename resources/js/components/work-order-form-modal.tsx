@@ -23,25 +23,25 @@ const WorkOrderFormModal: React.FC<WorkOrderFormModalProps> = ({ mode, show, onC
 
     return (
         <Modal show={show} size="3xl" onClose={onClose} popup>
-            <ModalHeader className="m-3 border-b border-[#E5E7EB]">{title}</ModalHeader>
+            <ModalHeader className="m-3 border-b border-gray-200 dark:border-gray-700">{title}</ModalHeader>
             <ModalBody>
                 {hasErrors && (
-                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4">
-                        <h3 className="text-sm font-medium text-red-800">Terdapat kesalahan pada data yang dimasukkan</h3>
+                    <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
+                        <h3 className="text-sm font-medium text-red-800 dark:text-red-400">Terdapat kesalahan pada data yang dimasukkan</h3>
                     </div>
                 )}
                 <WorkOrderForm initialData={initialData} onSubmit={onSubmit} formMethod={formMethod} errors={errors}/>
             </ModalBody>
-            <ModalFooter className="border-t border-[#E5E7EB]">
+            <ModalFooter className="border-t border-gray-200 dark:border-gray-700">
                 <Button
                     type="submit"
                     form="work-order-form"
-                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700"
                 >
                     <Save className="mr-2 h-4 w-4" />
                     {submitButtonText}
                 </Button>
-                <Button onClick={onClose} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200">
+                <Button onClick={onClose} className="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                     Batalkan
                 </Button>
             </ModalFooter>

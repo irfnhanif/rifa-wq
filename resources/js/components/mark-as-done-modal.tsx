@@ -42,12 +42,12 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
 
     return (
         <Modal show={show} size="xl" onClose={onClose} popup>
-            <ModalHeader className="m-3 border-b border-[#E5E7EB]">Selesai Mengerjakan?</ModalHeader>
+            <ModalHeader className="m-3 border-b border-[#E5E7EB] dark:border-gray-600">Selesai Mengerjakan?</ModalHeader>
             <ModalBody>
                 <form id="mark-as-done-form" onSubmit={handleSubmit} className="flex flex-col gap-4" autoComplete='off'>
-                    <p className="text-base text-[#4A5565]">
-                        Masukkan biaya untuk pekerjaan <span className="font-semibold">{order?.orderTitle}</span> milik {" "}
-                        <span className="font-semibold">{order?.customerName}</span>.
+                    <p className="text-base text-[#4A5565] dark:text-gray-300">
+                        Masukkan biaya untuk pekerjaan <span className="font-semibold dark:text-white">{order?.orderTitle}</span> milik {" "}
+                        <span className="font-semibold dark:text-white">{order?.customerName}</span>.
                     </p>
                     <div>
                         <div className="mb-2 block">
@@ -68,16 +68,16 @@ const MarkAsDoneModal: React.FC<MarkAsDoneModalProps> = ({ show, onClose, onSubm
                     </div>
                 </form>
             </ModalBody>
-            <ModalFooter className="border-t border-[#E5E7EB]">
+            <ModalFooter className="border-t border-[#E5E7EB] dark:border-gray-600">
                 <Button
                     type="submit"
                     form="mark-as-done-form"
-                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
+                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700"
                 >
                     <CheckCircle className="mr-2 h-4 w-4" />
                     Selesaikan Pekerjaan
                 </Button>
-                <Button onClick={onClose} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200">
+                <Button onClick={onClose} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
                     Batalkan
                 </Button>
             </ModalFooter>

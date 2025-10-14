@@ -33,14 +33,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <ModalHeader />
             <ModalBody>
                 <div className="text-center">
-                    <Icon className="mx-auto mb-4 h-14 w-14 text-[#6A7282]" />
-                    <h3 className="mb-5 text-lg font-semibold text-[#101828]">{title}</h3>
-                    <div className="mb-5 text-base text-[#4A5565]">{children}</div>
+                    <Icon className="mx-auto mb-4 h-14 w-14 text-[#6A7282] dark:text-gray-400" />
+                    <h3 className="mb-5 text-lg font-semibold text-[#101828] dark:text-white">{title}</h3>
+                    <div className="mb-5 text-base text-[#4A5565] dark:text-gray-300">{children}</div>
                     <div className="flex justify-center gap-4">
                         <Button className={confirmButtonStyles[confirmColor]} onClick={onConfirm}>
                             {confirmText}
                         </Button>
-                        <Button className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200" onClick={onClose}>
+                        <Button className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" onClick={onClose}>
                             Batalkan
                         </Button>
                     </div>

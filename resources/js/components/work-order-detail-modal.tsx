@@ -29,23 +29,23 @@ interface DetailItemProps {
 const DetailItem: React.FC<DetailItemProps> = ({ icon: Icon, label, value, className }) => (
     <div className={`flex flex-col gap-1 ${className}`}>
         <div className="flex items-center gap-1.5">
-            <Icon className="h-4 w-4 text-[#6A7282]" />
-            <span className="text-sm text-[#6A7282]">{label}</span>
+            <Icon className="h-4 w-4 text-[#6A7282] dark:text-gray-400" />
+            <span className="text-sm text-[#6A7282] dark:text-gray-400">{label}</span>
         </div>
-        <div className="font-medium text-[#4A5565]">{value || '-'}</div>
+        <div className="font-medium text-[#4A5565] dark:text-gray-200">{value || '-'}</div>
     </div>
 );
 
 const DetailItemDescription: React.FC<DetailItemProps> = ({ icon: Icon, label, value, className }) => (
     <div className={`flex flex-col gap-1 ${className}`}>
         <div className="flex items-center gap-1.5">
-            <Icon className="h-4 w-4 text-[#6A7282]" />
-            <span className="text-sm text-[#6A7282]">{label}</span>
+            <Icon className="h-4 w-4 text-[#6A7282] dark:text-gray-400" />
+            <span className="text-sm text-[#6A7282] dark:text-gray-400">{label}</span>
         </div>
         <textarea
             disabled
             value={value?.toString() || '-'}
-            className="text-sm font-light text-[#4A5565] border border-gray-300 rounded-md p-2 bg-gray-50"
+            className="rounded-md border border-gray-300 bg-gray-50 p-2 text-sm font-light text-[#4A5565] dark:border-gray-500 dark:bg-gray-700 dark:text-gray-200"
             rows={4}
         />
     </div>
@@ -83,10 +83,10 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
 
     return (
         <Modal show={show} size="5xl" onClose={onClose} popup>
-            <ModalHeader className="m-3 border-b border-[#E5E7EB]">Detail Pekerjaan</ModalHeader>
+            <ModalHeader className="m-3 border-b border-[#E5E7EB] dark:border-gray-700">Detail Pekerjaan</ModalHeader>
             <ModalBody className="py-6">
                 <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4 border-b border-[#E5E7EB] pb-2">
+                    <div className="grid grid-cols-2 gap-4 border-b border-[#E5E7EB] pb-2 dark:border-gray-600">
                         <div className="flex flex-col gap-6">
                             <DetailItem icon={User} label="Nama Pelanggan" value={workOrder.customerName} />
                             <DetailItem icon={Phone} label="Nomor WhatsApp" value={workOrder.whatsappNumber} />
@@ -97,7 +97,7 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6 border-b border-[#E5E7EB] pb-6">
+                    <div className="grid grid-cols-2 gap-6 border-b border-[#E5E7EB] pb-6 dark:border-gray-600">
                         <div className="flex flex-col gap-6">
                             <DetailItem icon={Ruler} label="Ukuran" value={workOrder.printingSize} />
                             <DetailItem icon={Layers} label="Bahan" value={workOrder.printingMaterial} />
@@ -125,12 +125,14 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
                         />
                         {isAdmin ? <DetailItem icon={Handshake} label="Karyawan" value={workOrder.user?.name} /> : <div />}
                     </div>
-                    <div className="text-xs text-gray-500">
-                        Terakhir diperbarui: {new Date(workOrder.updatedAt).toLocaleDateString('id-ID', {
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Terakhir diperbarui:{' '}
+                        {new Date(workOrder.updatedAt).toLocaleDateString('id-ID', {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',
-                        })} {new Date(workOrder.updatedAt).toLocaleTimeString('id-ID', {
+                        })}{' '}
+                        {new Date(workOrder.updatedAt).toLocaleTimeString('id-ID', {
                             hour: '2-digit',
                             minute: '2-digit',
                         })}
@@ -139,12 +141,18 @@ const WorkOrderDetailModal: React.FC<WorkOrderDetailModalProps> = ({ show, workO
             </ModalBody>
 
             {isUser && (
-                <ModalFooter className="justify-start border-t border-[#E5E7EB]">
-                    <Button onClick={() => onEdit(workOrder)} className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200">
+                <ModalFooter className="justify-start border-t border-[#E5E7EB] dark:border-gray-700">
+                    <Button
+                        onClick={() => onEdit(workOrder)}
+                        className="bg-[#E5E7EB] text-[#4A5565] hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
+                    >
                         <SquarePen className="mr-2 h-4 w-4" />
                         Edit
                     </Button>
-                    <Button onClick={() => onDelete(workOrder)} className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300">
+                    <Button
+                        onClick={() => onDelete(workOrder)}
+                        className="bg-[#FF5A1F] text-[#FFFFFF] hover:bg-orange-600 focus:ring-orange-300 dark:bg-[#cf4919] dark:hover:bg-orange-700 dark:focus:ring-orange-400"
+                    >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Hapus
                     </Button>
