@@ -30,7 +30,7 @@ class WorkOrderController extends Controller
             return is_string($status) && in_array($status, $allowedStatus, true);
         }));
 
-        $allowedColumns = ['order_title', 'customer_name', 'created_at', 'order_deadline', 'order_status'];
+        $allowedColumns = ['created_at', 'updated_at', 'order_deadline', 'order_status'];
         $validatedColumn = in_array($column, $allowedColumns, true) ? $column : 'created_at';
         $validatedDirection = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 

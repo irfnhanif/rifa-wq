@@ -74,7 +74,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
                 <div className="flex items-center gap-2">
                     <h3 className="text-xl font-semibold text-[#101828]">{customerName}</h3>
                     {isAdmin && deleted && (
-                        <Badge color="failure" icon={Trash2} size="sm" className='ml-1 text-xs font-light'>
+                        <Badge color="failure" icon={Trash2} size="sm" className="ml-1 text-xs font-light">
                             Dihapus
                         </Badge>
                     )}
@@ -111,12 +111,16 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
                         <User className="h-4 w-4 text-blue-500" />
                         <span className="font-medium text-gray-700">{user?.name}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-gray-500" />
-                        <span className={clsx('font-medium', diffDays > 0 ? 'text-green-600' : diffDays === 0 ? 'text-yellow-600' : 'text-red-600')}>
-                            {daysRemainingText}
-                        </span>
-                    </div>
+                    {['PENDING', 'IN_PROCESS'].includes(orderStatus) && (
+                        <div className="flex items-center gap-2 text-sm">
+                            <Clock className="h-4 w-4 text-gray-500" />
+                            <span
+                                className={clsx('font-medium', diffDays > 0 ? 'text-green-600' : diffDays === 0 ? 'text-yellow-600' : 'text-red-600')}
+                            >
+                                {daysRemainingText}
+                            </span>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
