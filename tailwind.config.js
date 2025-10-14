@@ -1,13 +1,12 @@
-// tailwind.config.js
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    darkMode: 'class',
     content: [
-        './resources/js/**/*.tsx', // Make sure it scans .tsx files
+        './resources/js/**/*.tsx',
         'node_modules/flowbite-react/lib/esm/**/*.js',
     ],
-
     theme: {
         extend: {
             fontFamily: {

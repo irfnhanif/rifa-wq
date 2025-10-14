@@ -1,7 +1,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Notification } from '@/types/Notification';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Avatar, Button, Dropdown, DropdownHeader, DropdownItem, Navbar, NavbarBrand, Popover } from 'flowbite-react';
+import { Avatar, Button, DarkThemeToggle, Dropdown, DropdownHeader, DropdownItem, Navbar, NavbarBrand, Popover } from 'flowbite-react';
 import { Bell, LogOut } from 'lucide-react';
 import React, { useState } from 'react';
 import NotificationPopover from './notification-popover';
@@ -59,7 +59,7 @@ const AppNavbar: React.FC = () => {
     };
 
     return (
-        <Navbar fluid rounded className="border-b border-[#E5E7EB] bg-[#F9FAFB] px-28 py-6">
+        <Navbar fluid rounded className="border-b border-gray-200 bg-gray-50 px-28 py-6 dark:border-gray-700 dark:bg-gray-800">
             <NavbarBrand as={Link} href="/">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" className="mr-3 ml-3 h-7 w-7">
                     <path
@@ -71,9 +71,11 @@ const AppNavbar: React.FC = () => {
                         d="M24 16v-2h-3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3v-2h-2v-8Zm8-2v-2h-5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5v-2h-4V14Zm-16 2h2v8h-2z"
                     />
                 </svg>
-                <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#101828]">RIFA-WQ</span>
+                <span className="self-center text-2xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">RIFA-WQ</span>
             </NavbarBrand>
             <div className="flex items-center gap-4 md:order-2">
+                <DarkThemeToggle />
+
                 <Popover
                     aria-labelledby="notifications-popover"
                     content={
@@ -84,14 +86,14 @@ const AppNavbar: React.FC = () => {
                         />
                     }
                 >
-                    <Button color="gray" className="relative rounded-none border-0 bg-transparent p-2 enabled:hover:bg-gray-100">
-                        <Bell className="h-6 w-6 text-[#4A5565]" />
+                    <div className="relative cursor-pointer rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <Bell className="h-6 w-6 text-gray-600 dark:text-gray-400" />
                         {unreadCount > 0 && (
                             <div className="absolute -top-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
                                 {unreadCount > 99 ? '99+' : unreadCount}
                             </div>
                         )}
-                    </Button>
+                    </div>
                 </Popover>
 
                 {user && (
