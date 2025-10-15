@@ -38,21 +38,30 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
 
         if (orderStatus === 'PENDING') {
             return (
-                <Button className="bg-[#D97706] dark:bg-orange-600 text-[#FFFFFF] hover:bg-orange-800 dark:hover:bg-orange-700 focus:ring-4 focus:ring-orange-300 dark:focus:ring-orange-800" onClick={handleButtonClick}>
+                <Button
+                    className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
+                    onClick={handleButtonClick}
+                >
                     <Hourglass className="mr-2 h-4 w-4" />
                     Mulai Proses
                 </Button>
             );
         } else if (orderStatus === 'IN_PROCESS') {
             return (
-                <Button className="bg-[#047857] dark:bg-green-600 text-[#FFFFFF] hover:bg-green-800 dark:hover:bg-green-700 focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800" onClick={handleButtonClick}>
+                <Button
+                    className="bg-[#047857] text-[#FFFFFF] hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                    onClick={handleButtonClick}
+                >
                     <Check className="mr-2 h-4 w-4" />
                     Tandai Selesai
                 </Button>
             );
         } else if (orderStatus === 'FINISHED') {
             return (
-                <Button className="bg-[#1447E6] dark:bg-blue-600 text-[#FFFFFF] hover:bg-blue-800 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800" onClick={handleButtonClick}>
+                <Button
+                    className="bg-[#1447E6] text-[#FFFFFF] hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={handleButtonClick}
+                >
                     <Truck className="mr-2 h-4 w-4" />
                     Tandai Diambil
                 </Button>
@@ -63,7 +72,9 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
 
     return (
         <div
-            className={clsx('flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] dark:border-gray-700 bg-white dark:bg-gray-800 p-7 shadow-sm')}
+            className={clsx(
+                'flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white p-7 shadow-sm dark:border-gray-700 dark:bg-gray-800',
+            )}
             onClick={() => onClick(workOrder)}
         >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg">
@@ -92,7 +103,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
             {isUser && (
                 <div className="flex items-center gap-2">
                     <Button
-                        className="bg-[#E5E7EB] dark:bg-gray-700 text-[#101828] dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        className="bg-[#E5E7EB] text-[#101828] hover:bg-gray-200 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                         onClick={(e) => {
                             e.stopPropagation();
                             onEdit(workOrder);
@@ -111,11 +122,18 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
                         <User className="h-4 w-4 text-blue-500 dark:text-blue-400" />
                         <span className="font-medium text-gray-700 dark:text-gray-300">{user?.name}</span>
                     </div>
-                    {['PENDING', 'IN_PROCESS'].includes(orderStatus) && (
+                    {!deleted && ['PENDING', 'IN_PROCESS'].includes(orderStatus) && (
                         <div className="flex items-center gap-2 text-sm">
                             <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                             <span
-                                className={clsx('font-medium', diffDays > 0 ? 'text-green-600 dark:text-green-400' : diffDays === 0 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400')}
+                                className={clsx(
+                                    'font-medium',
+                                    diffDays > 0
+                                        ? 'text-green-600 dark:text-green-400'
+                                        : diffDays === 0
+                                          ? 'text-yellow-600 dark:text-yellow-400'
+                                          : 'text-red-600 dark:text-red-400',
+                                )}
                             >
                                 {daysRemainingText}
                             </span>
