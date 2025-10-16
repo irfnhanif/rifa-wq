@@ -39,7 +39,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
         if (orderStatus === 'PENDING') {
             return (
                 <Button
-                    className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800"
+                    className="bg-[#D97706] text-[#FFFFFF] hover:bg-orange-800 focus:ring-4 focus:ring-orange-300 dark:bg-[#D97706] dark:hover:bg-orange-700 dark:focus:ring-orange-800"
                     onClick={handleButtonClick}
                 >
                     <Hourglass className="mr-2 h-4 w-4" />
