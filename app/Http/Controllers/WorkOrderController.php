@@ -17,8 +17,8 @@ class WorkOrderController extends Controller
     {
         $search = trim((string) $request->query('search', ''));
         $statusInput = $request->query('status');
-        $column = $request->query('column', 'created_at');
-        $direction = $request->query('direction', 'asc');
+        $column = $request->query('column', 'updated');
+        $direction = $request->query('direction', 'desc');
         $userId = $request->query('user');
 
         if (!is_array($statusInput)) {
