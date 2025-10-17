@@ -46,7 +46,7 @@ const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({ notificatio
                 <div className="flex flex-col gap-2">
                     <h4 className="text-sm font-medium text-[#4A5565] dark:text-gray-300">Belum Dibaca</h4>
                     <div className="h-0 border-t-2 border-[#E5E7EB] dark:border-gray-600" />
-                    {unreadNotifications.map((notification, index) => (
+                    {unreadNotifications.slice(0, 3).map((notification, index) => (
                         <div key={notification.id}>
                             <div
                                 className="cursor-pointer rounded-md p-2 transition-colors hover:border-l-4 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
@@ -72,9 +72,12 @@ const NotificationsPopover: React.FC<NotificationsPopoverProps> = ({ notificatio
                                     })}
                                 </p>
                             </div>
-                            {index < unreadNotifications.length - 1 && <div className="mt-2 h-0 border-t border-[#E5E7EB] dark:border-gray-600" />}
+                            {index < Math.min(unreadNotifications.length - 1, 2) && <div className="mt-2 h-0 border-t border-[#E5E7EB] dark:border-gray-600" />}
                         </div>
                     ))}
+                    {unreadNotifications.length > 3 && (
+                        <p className="mt-2 text-center text-xs text-[#6A7282] dark:text-gray-400">dan {unreadNotifications.length - 3} notifikasi lainnya...</p>
+                    )}
                 </div>
             )}
 
