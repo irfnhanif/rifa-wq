@@ -17,7 +17,7 @@ class WorkOrderController extends Controller
     {
         $search = trim((string) $request->query('search', ''));
         $statusInput = $request->query('status');
-        $column = $request->query('column', 'updated');
+        $column = $request->query('column', 'updated_at');
         $direction = $request->query('direction', 'desc');
         $userId = $request->query('user');
 
