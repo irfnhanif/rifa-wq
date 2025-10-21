@@ -377,7 +377,10 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
     };
 
     useEffect(() => {
-        setSearch(filters.search || '');
+        if (document.activeElement?.id !== 'search') {
+            setSearch(filters.search || '');
+        }
+        
         setSortColumn(filters.column || 'order_deadline');
         setSortDirection(filters.direction || 'asc');
 
