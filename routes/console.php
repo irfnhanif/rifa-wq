@@ -3,7 +3,6 @@
 use App\Jobs\DeleteNotifications;
 use App\Jobs\DeleteWorkOrders;
 use App\Jobs\GenerateNotifications;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::job(new DeleteNotifications)->dailyAt('04:55');

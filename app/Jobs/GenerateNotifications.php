@@ -19,6 +19,7 @@ class GenerateNotifications implements ShouldQueue
         $workOrders = WorkOrder::whereIn('order_status', ['PENDING', 'IN_PROCESS'])
             ->whereDate('order_deadline', '<=', now()->startOfDay()
             ->toDateString())
+            ->orderByDesc('order_deadline')
             ->get();
 
         foreach ($workOrders as $workOrder) {
