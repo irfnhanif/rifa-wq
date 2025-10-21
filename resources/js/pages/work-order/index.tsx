@@ -253,7 +253,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     replace: true,
                 },
             );
-        }, 300),
+        }, 100),
         [buildRouterParams],
     );
 
@@ -595,7 +595,7 @@ const WorkOrderIndex: React.FC<WorkOrderIndexProps> = ({ stats, workOrders, filt
                     </div>
                 </div>
             </AppLayout>
-            
+
             <WorkOrderFormModal
                 show={isFormModalOpen}
                 onClose={handleCloseFormModal}
