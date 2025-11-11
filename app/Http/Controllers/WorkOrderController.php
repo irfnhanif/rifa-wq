@@ -93,12 +93,20 @@ class WorkOrderController extends Controller
         }
 
         $businessDate = now()->hour < 5 ? now()->subDay()->startOfDay() : now()->startOfDay();
+        $dayEnd = $businessDate->copy()->addDay()->setTime(5, 0, 0);
 
-        $statsQuery->whereIn('order_status', ['FINISHED', 'PICKED_UP'])
-            ->whereBetween('updated_at', [
-                $businessDate,
-                $businessDate->copy()->addDay()->setTime(5, 0, 0)
-            ]);
+        $statsQuery->where(function ($query) use ($businessDate, $dayEnd) {
+            $query->where(function ($q) use ($businessDate, $dayEnd) {
+                $q->whereIn('order_status', ['FINISHED', 'PICKED_UP'])
+                    ->whereNotNull('finished_at')
+                    ->whereBetween('finished_at', [$businessDate, $dayEnd]);
+            })
+                ->orWhere(function ($q) use ($businessDate, $dayEnd) {
+                    $q->where('order_status', 'FINISHED')
+                        ->whereNull('finished_at')
+                        ->whereBetween('updated_at', [$businessDate, $dayEnd]);
+                });
+        });
 
         if ($request->user()->role !== 'ADMIN') {
             $statsQuery->where('user_id', $request->user()->id);
@@ -206,7 +214,8 @@ class WorkOrderController extends Controller
                 case 'IN_PROCESS':
                     $workOrder->update([
                         'order_status' => 'FINISHED',
-                        'order_cost' => $validated['order_cost']
+                        'order_cost' => $validated['order_cost'],
+                        'finished_at' => now()
                     ]);
                     $statusMessage = 'diselesaikan';
                     break;

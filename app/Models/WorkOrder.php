@@ -25,6 +25,7 @@ class WorkOrder extends Model
         'order_deadline',
         'order_status',
         'order_cost',
+        'finished_at'
     ];
 
     protected $casts = [
