@@ -73,7 +73,7 @@ const WorkOrderCard: React.FC<WorkOrderCardProps> = ({ order: workOrder, onEdit,
     return (
         <div
             className={clsx(
-                'flex w-full items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white p-7 shadow-sm dark:border-gray-700 dark:bg-gray-800',
+                'mx-auto flex w-7/8 items-center gap-6 overflow-hidden rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800',
             )}
             onClick={() => onClick(workOrder)}
         >

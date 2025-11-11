@@ -63,7 +63,7 @@ class WorkOrderController extends Controller
 
         $workOrders = $query
             ->orderBy($validatedColumn, $validatedDirection)
-            ->paginate(10)
+            ->paginate(15)
             ->withQueryString();
 
         $workOrders->getCollection()->transform(function (WorkOrder $workOrder) {
